@@ -1,6 +1,7 @@
 // キャッシュファイルの指定
 var CACHE_NAME = "pwa-mobile-caches";
 var urlsToCache = [
+    "./index.html",
     "./offline.htm",
 ];
 
