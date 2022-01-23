@@ -33,7 +33,6 @@
       }
     </script>
     <link rel="shortcut icon" href="favicon.ico">
-    <link type="text/css" href="//use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="./libs/webix/codebase/webix.min.css" type="text/css">
     <script src="./libs/webix/codebase/webix.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="./libs/webix/codebase/winmenu/winmenu.css" type="text/css">
@@ -41,24 +40,24 @@
   </head>
   <body ontouchmove="event.preventDefault()">
   <script type="text/javascript" charset="utf-8">
-var link = "https://blog.webix.com/wp-content/uploads/2017/07/";
+var link = "./images/";
 var menu_data = [
   { id:"home", value:"今月の回覧板", color:"#fc3", img:link+"home.png", width:2, height:2, x:1, y:1 },
   { id:"projects", value:"予定表", color:"#44c956", img:link+"12.png", width:2, x:3, y:1 },
   { id:"following", value:"便利帳", color:"#11a100", img:link+"following.png", width:2, x:3, y:2 },
 ];
-var menu = {
-  view:"winmenu", data:menu_data,
-  on:{
-    onItemClick:function(id){
-      webix.message(this.getItem(id).value);
-    }
-  }
- };
  var ui_menu = {
   padding:10, rows:[
     {
-      view:"winmenu", id:"portal_menu", data:menu_data, xCount:4, yCount:2
+      view:"winmenu", id:"portal_menu", data:menu_data, xCount:4, yCount:2,
+      on:{
+        onItemClick:function(id){
+          webix.message(this.getItem(id).value);
+          if (id=="home"){
+            window.open("https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf");
+          }
+        }
+      }
     }
   ]
 };
