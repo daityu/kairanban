@@ -22,7 +22,7 @@
     <!-- CODELAB: Add meta theme-color -->
     <meta name="theme-color" content="#2F3BA2" />
     <style>
-      .webix_el_box, .webix_cal_body .webix_cal_day_inner  {
+      .webix_el_box, .webix_cal_body .webix_cal_day_inner, .webix_cal_body .webix_cal_block, .webix_cal_month_name{
         font-size: 14pt !important;
       }
     </style>
@@ -62,6 +62,8 @@ var menu_data = [
           webix.message(this.getItem(id).value);
           if (id=="home"){
             window.open("https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf");
+          } else if(id=="following"){
+            window.open("./pdf/totsuka_life.pdf");
           }
         }
       }
