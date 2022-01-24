@@ -52,7 +52,7 @@
   <title>menu</title>
 </head>
 
-<body ontouchmove="event.preventDefault()">
+<body>
   <script type="text/javascript" charset="utf-8">
     //メイン画面
     const ui_menu_message = {};
@@ -73,14 +73,15 @@
         {
           view: "toolbar", cols: [
             { view: "label", label: "○○○○○○自治会へようこそ" },
-            { view: "icon", icon: "mdi mdi-reload", align: "left", width:50,
-              on:{
-                onItemClick:function(){location.reload(true)}
+            {
+              view: "icon", icon: "mdi mdi-reload", align: "left", width: 50,
+              on: {
+                onItemClick: function () { location.reload(true) }
               }
             }
           ]
         },
-        {view: "template", id:"ui_menu_oshirase", scroll:"auto"},
+        { view: "template", id: "ui_menu_oshirase", scroll: "auto" },
         {
           view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto",
           on: {
