@@ -61,7 +61,7 @@
       { id: "event", value: "イベント情報", color: "#703DB8", icon: "mdi-table-large", width: 2, x: 3, y: 1 },
       { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 2, x: 3, y: 2 },
       { id: "help", value: "使い方", color: "#45B093", icon: "mdi-help-circle", width: 2, height: 2, x: 1, y: 3 },
-      { id: "bousai", value: "防災安否確認", color: "#7B3C38", icon: "mdi-home-heart", width: 2, height: 2, x: 3, y: 3 },
+      { id: "bousai", value: "安否確認", color: "#7B3C38", icon: "mdi-home-heart", width: 2, height: 2, x: 3, y: 3 },
     ];
     const ui_menu_logic = {
       init: function () {
@@ -97,6 +97,9 @@
                 case "following":
                   window.open("./pdf/totsuka_life.pdf");
                   break;
+                case "bousai":
+                  $$("ui_bousai").show();
+                  break;
                 default:
                   break;
               }
@@ -105,23 +108,75 @@
         }
       ]
     };
+    //イベント
+    const ui_event_url = '<iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;showTabs=0&amp;src=ja.japanese%23holiday%40group.v.calendar.google.com" style="border-width:0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>';
     const ui_event = {
       view: "window", id: "ui_event", head: "イベント情報", close: true, fullscreen: true, modal: true,
       body: {
-        template: '<iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=ja.japanese%23holiday%40group.v.calendar.google.com" style="border-width:0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>',
-        scroll: "auto"
-      },
+        rows: [
+          {
+            template: ui_event_url,
+            scroll: "auto"
+          },
+          { view: "button", label: "閉じる", click: function (id, event) { $$("ui_event").hide() } }
+        ]
+      }
     };
-    //画面生成
+    //安否確認
+    const ui_bousai = {
+      view: "window", id: "ui_bousai", head: "安否確認", close: true, fullscreen: true, modal: true,
+      body: {
+        rows: [
+          {
+            view: "form",
+            elements: [
+              { view: "text", label: "お名前" },
+              { view: "label", label: "状況を教えて下さい" },
+              {
+                view: "radio", label: "", labelPosition: "top", vertical: true, options: [
+                  { id: "自宅待機", value: "自宅待機" },
+                  { id: "避難所", value: "避難所" },
+                  { id: "親戚／知人", value: "親戚／知人" },
+                  { id: "仕事中", value: "仕事中" },
+                  { id: "大丈夫", value: "大丈夫" },
+                ]
+              },
+              { view: "label", label: "支援が必要ですか？" },
+              { view: "checkbox", labelRight: "支援して欲しい", labelWidth: 0 },
+              { view: "checkbox", labelRight: "支援は不要です", labelWidth: 0 },
+              {
+                view: "button", label: "送信する", css: "webix_primary", click: function () {
+                  webix.confirm({
+                    title: "確認",
+                    ok: "送信する", cancel: "キャンセル",
+                    text: "データを送信します。<br>※何度でも送信できます"
+                  })
+                    .then(function () {
+                      webix.message("送信しました");
+                    })
+                    .fail(function () {
+                      webix.message("キャンセルしました");
+                    });
+                }
+              },
+              { height: 50 }
+            ]
+          },
+          { view: "button", label: "閉じる", click: function (id, event) { $$("ui_bousai").hide() } }
+        ]
+      }
+    };
+    //メイン
     webix.ready(function () {
       //初期処理
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
+      //サブ画面定義
+      webix.ui(ui_event);
+      webix.ui(ui_bousai);
       //メイン画面
       webix.ui(ui_menu);
       ui_menu_logic.init();
-      //ポップアップ画面
-      webix.ui(ui_event);
     });
   </script>
 </body>
