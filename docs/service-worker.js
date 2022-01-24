@@ -1,9 +1,7 @@
 // キャッシュファイルの指定
 var CACHE_NAME = "pwa-mobile-caches";
 var urlsToCache = [
-    "./offline.htm",
-    "./libs/webix/codebase/webix.min.css",
-    "./libs/webix/codebase/webix.min.js"
+    "./offline.htm"
 ];
 
 // インストール処理
