@@ -86,7 +86,7 @@
           view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto",
           on: {
             onItemClick: function (id) {
-              webix.message(this.getItem(id).value);
+              // webix.message(this.getItem(id).value);
               switch (id) {
                 case "home":
                   window.open("https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf");
@@ -106,22 +106,11 @@
       ]
     };
     const ui_event = {
-      view: "popup", id: "ui_event", body: {
-        rows: [
-          {
-            view: "calendar",
-            id: "my_calendar",
-            date: new Date(),
-            weekHeader: true,
-            calendarHeader: "%Y年 %n月",
-            skipEmptyWeeks: true,
-            events: webix.Date.isHoliday
-          },
-          {
-            height: 100
-          }
-        ]
-      }
+      view: "window", id: "ui_event", head: "イベント情報", close: true, fullscreen: true, modal: true,
+      body: {
+        view: "iframe", id: "ui_event_frame",
+        src: 'https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=ja.japanese%23holiday%40group.v.calendar.google.com" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"'
+      },
     };
     //画面生成
     webix.ready(function () {
