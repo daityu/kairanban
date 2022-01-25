@@ -57,7 +57,7 @@
     //メイン画面
     const ui_menu_message = {};
     const ui_menu_data = [
-      { id: "home", value: "今月の回覧板", color: "#3D41B3", icon: "mdi-home", width: 2, height: 2, x: 1, y: 1 },
+      { id: "kairan", value: "今月の回覧板", color: "#3D41B3", icon: "mdi-home", width: 2, height: 2, x: 1, y: 1 },
       { id: "event", value: "イベント情報", color: "#703DB8", icon: "mdi-table-large", width: 2, x: 3, y: 1 },
       { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 2, x: 3, y: 2 },
       { id: "help", value: "使い方", color: "#45B093", icon: "mdi-help-circle", width: 2, height: 2, x: 1, y: 3 },
@@ -65,7 +65,7 @@
     ];
     const ui_menu_logic = {
       init: function () {
-        $$("ui_menu_oshirase").setHTML(marked.parse('# 会員の皆様へ\n\nこのたび、政府は、令和４年１月21日から、神奈川県への「まん延防止等重点措置」の適用を決定しました。\n\n圧倒的な感染力を持つオミクロン株によって、新規感染者は、わずかな期間で激増しています。\n\n自治会町内会の皆様におかれましては、これまでも基本的な感染対策にご協力いただいていますが、人混みは危険という意識を強く持ち、引き続き徹底してくださいますようお願いいたします。'));
+        $$("ui_menu_oshirase").setHTML(marked.parse('## 会員の皆様へ\n\nこのたび、政府は、令和４年１月21日から、神奈川県への「まん延防止等重点措置」の適用を決定しました。\n\n圧倒的な感染力を持つオミクロン株によって、新規感染者は、わずかな期間で激増しています。\n\n自治会町内会の皆様におかれましては、これまでも基本的な感染対策にご協力いただいていますが、人混みは危険という意識を強く持ち、引き続き徹底してくださいますようお願いいたします。'));
       }
     };
     const ui_menu = {
@@ -88,7 +88,7 @@
             onItemClick: function (id) {
               // webix.message(this.getItem(id).value);
               switch (id) {
-                case "home":
+                case "kairan":
                   window.open("https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf");
                   break;
                 case "event":
@@ -100,6 +100,9 @@
                 case "bousai":
                   $$("ui_bousai").show();
                   break;
+                case "help":
+                  $$("ui_help").show();
+                  break;
                 default:
                   break;
               }
@@ -109,7 +112,7 @@
       ]
     };
     //イベント
-    const ui_event_url = '<iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;showTabs=0&amp;src=ja.japanese%23holiday%40group.v.calendar.google.com" style="border-width:0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>';
+    const ui_event_url = '<iframe src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;showTabs=0&amp;showTitle=0&amp;src=ja.japanese%23holiday%40group.v.calendar.google.com" style="border-width:0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>';
     const ui_event = {
       view: "window", id: "ui_event", head: "イベント情報", close: true, fullscreen: true, modal: true,
       body: {
@@ -136,6 +139,19 @@
         ]
       }
     };
+    //使い方
+    const ui_help = {
+      view: "window", id: "ui_help", head: "使い方", close: true, fullscreen: true, modal: true,
+      body: {
+        rows: [
+          {
+            template: marked.parse('## 使い方\n\n 「ホーム画面に追加」することで、スマホから便利に使用できます。\n\n [iphoneの場合] ![iphone例](./images/iphone.png "iphone例")\n\n [androidの場合] ![android例](./images/android.png "iphone例")'),
+            scroll: "auto"
+          },
+          { view: "button", label: "閉じる", click: function (id, event) { $$("ui_help").hide() } }
+        ]
+      }
+    };
     //メイン
     webix.ready(function () {
       //初期処理
@@ -144,6 +160,7 @@
       //サブ画面定義
       webix.ui(ui_event);
       webix.ui(ui_bousai);
+      webix.ui(ui_help);
       //メイン画面
       webix.ui(ui_menu);
       ui_menu_logic.init();
