@@ -123,44 +123,14 @@
       }
     };
     //安否確認
+    const ui_bousai_url = '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdDQwL-Uq2yZ25J3FspTnwoeX35sUc9wB6GFaeOUlfq8AT3bQ/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>';
     const ui_bousai = {
       view: "window", id: "ui_bousai", head: "安否確認", close: true, fullscreen: true, modal: true,
       body: {
         rows: [
           {
-            view: "form",
-            elements: [
-              { view: "text", label: "お名前" },
-              { view: "label", label: "状況を教えて下さい" },
-              {
-                view: "radio", label: "", labelPosition: "top", vertical: true, options: [
-                  { id: "自宅待機", value: "自宅待機" },
-                  { id: "避難所", value: "避難所" },
-                  { id: "親戚／知人", value: "親戚／知人" },
-                  { id: "仕事中", value: "仕事中" },
-                  { id: "大丈夫", value: "大丈夫" },
-                ]
-              },
-              { view: "label", label: "支援が必要ですか？" },
-              { view: "checkbox", labelRight: "支援して欲しい", labelWidth: 0 },
-              { view: "checkbox", labelRight: "支援は不要です", labelWidth: 0 },
-              {
-                view: "button", label: "送信する", css: "webix_primary", click: function () {
-                  webix.confirm({
-                    title: "確認",
-                    ok: "送信する", cancel: "キャンセル",
-                    text: "データを送信します。<br>※何度でも送信できます"
-                  })
-                    .then(function () {
-                      webix.message("送信しました");
-                    })
-                    .fail(function () {
-                      webix.message("キャンセルしました");
-                    });
-                }
-              },
-              { height: 50 }
-            ]
+            template: ui_bousai_url,
+            scroll: "auto"
           },
           { view: "button", label: "閉じる", click: function (id, event) { $$("ui_bousai").hide() } }
         ]
