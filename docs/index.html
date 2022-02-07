@@ -40,6 +40,16 @@
           });
       });
     }
+    //設定ファイル取得
+    var COMMON_JSON = {
+      public_dir: '公開用フォルダ',
+      osirase_file: './pdf/oshirase.txt',
+      calendar_url: 'https://calendar.google.com/calendar/embed?src=nir9cd6majhgtvip8vm4umk3c4%40group.calendar.google.com&ctz=Asia%2FTokyo',
+      kairanban_dir: 'https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf',
+      gijiroku_dir: '議事録ディレクトリ',
+      benri_dir: './pdf/totsuka_life.pdf',
+      anpi_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdDQwL-Uq2yZ25J3FspTnwoeX35sUc9wB6GFaeOUlfq8AT3bQ/viewform?usp=sf_link', //安否確認URL(google form)
+    };
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet" href="//cdn.webix.com/edge/skins/flat.min.css" type="text/css">
@@ -65,7 +75,9 @@
     ];
     const ui_menu_logic = {
       init: function () {
-        $$("ui_menu_oshirase").setHTML(marked.parse('## 会員の皆様へ\n\nこのたび、政府は、令和４年１月21日から、神奈川県への「まん延防止等重点措置」の適用を決定しました。\n\n圧倒的な感染力を持つオミクロン株によって、新規感染者は、わずかな期間で激増しています。\n\n自治会町内会の皆様におかれましては、これまでも基本的な感染対策にご協力いただいていますが、人混みは危険という意識を強く持ち、引き続き徹底してくださいますようお願いいたします。'));
+        webix.ajax().get(COMMON_JSON.osirase_file).then(function(data){
+          $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
+        });
       }
     };
     const ui_menu = {
@@ -89,17 +101,16 @@
               // webix.message(this.getItem(id).value);
               switch (id) {
                 case "kairan":
-                  window.open("https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf");
+                  window.open(COMMON_JSON.kairanban_dir);
                   break;
                 case "event":
-                  // $$("ui_event").show();
-                  window.open("https://calendar.google.com/calendar/embed?src=nir9cd6majhgtvip8vm4umk3c4%40group.calendar.google.com&ctz=Asia%2FTokyo");
+                  window.open(COMMON_JSON.calendar_url);
                   break;
                 case "following":
-                  window.open("./pdf/totsuka_life.pdf");
+                  window.open(COMMON_JSON.benri_dir);
                   break;
                 case "bousai":
-                  $$("ui_bousai").show();
+                  window.open(COMMON_JSON.anpi_url);
                   break;
                 case "help":
                   $$("ui_help").show();
@@ -112,34 +123,6 @@
         }
       ]
     };
-    //イベント
-    const ui_event_url = 'https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23B39DDB&ctz=Asia%2FTokyo&showNav=1&showTitle=0&showPrint=0&showTabs=0&showCalendars=0&showDate=1&showTz=0&src=amEuamFwYW5lc2UjaG9saWRheUBncm91cC52LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23009688';
-    const ui_event = {
-      view: "window", id: "ui_event", head: "イベント情報", close: true, fullscreen: true, modal: true,
-      body: {
-        rows: [
-          {
-            view:"iframe", id:"ui_event_frame", src:ui_event_url,
-            scroll: "auto"
-          },
-          { view: "button", height:60, label: "閉じる", click: function (id, event) { $$("ui_event").hide() } }
-        ]
-      }
-    };
-    //安否確認
-    const ui_bousai_url = '<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdDQwL-Uq2yZ25J3FspTnwoeX35sUc9wB6GFaeOUlfq8AT3bQ/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>';
-    const ui_bousai = {
-      view: "window", id: "ui_bousai", head: "安否確認", close: true, fullscreen: true, modal: true,
-      body: {
-        rows: [
-          {
-            template: ui_bousai_url,
-            scroll: "auto"
-          },
-          { view: "button", height:60, label: "閉じる", click: function (id, event) { $$("ui_bousai").hide() } }
-        ]
-      }
-    };
     //使い方
     const ui_help = {
       view: "window", id: "ui_help", head: "使い方", close: true, fullscreen: true, modal: true,
@@ -149,7 +132,7 @@
             template: marked.parse('## 使い方\n\n 「ホーム画面に追加」することで、スマホから便利に使用できます。\n\n [iphoneの場合] \n\n ![iphone例](./images/iphone.png "iphone例")\n\n [androidの場合] \n\n ![android例](./images/android.png "iphone例")'),
             scroll: "auto"
           },
-          { view: "button", height:60, label: "閉じる", click: function (id, event) { $$("ui_help").hide() } }
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_help").hide() } }
         ]
       }
     };
@@ -159,8 +142,6 @@
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
       //サブ画面定義
-      webix.ui(ui_event);
-      webix.ui(ui_bousai);
       webix.ui(ui_help);
       //メイン画面
       webix.ui(ui_menu);
