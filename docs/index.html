@@ -49,6 +49,7 @@
       gijiroku_dir: '議事録ディレクトリ',
       benri_dir: './pdf/totsuka_life.pdf',
       anpi_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdDQwL-Uq2yZ25J3FspTnwoeX35sUc9wB6GFaeOUlfq8AT3bQ/viewform?usp=sf_link', //安否確認URL(google form)
+      help_url: './pdf/help.pdf'
     };
   </script>
   <link rel="shortcut icon" href="favicon.ico">
@@ -75,7 +76,7 @@
     ];
     const ui_menu_logic = {
       init: function () {
-        webix.ajax().get(COMMON_JSON.osirase_file).then(function(data){
+        webix.ajax().get(COMMON_JSON.osirase_file).then(function (data) {
           $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
         });
       }
@@ -113,7 +114,8 @@
                   window.open(COMMON_JSON.anpi_url);
                   break;
                 case "help":
-                  $$("ui_help").show();
+                  window.open(COMMON_JSON.help_url);
+                  // $$("ui_help").show();
                   break;
                 default:
                   break;
