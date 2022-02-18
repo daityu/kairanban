@@ -64,13 +64,14 @@
 </head>
 
 <body>
-  <script type="text/javascript" charset="utf-8">
+  <script type="module">
     //メイン画面
     const ui_menu_message = {};
     const ui_menu_data = [
       { id: "kairan", value: "今月の回覧板", color: "#3D41B3", icon: "mdi-home", width: 2, height: 2, x: 1, y: 1 },
       { id: "event", value: "イベント情報", color: "#703DB8", icon: "mdi-table-large", width: 2, x: 3, y: 1 },
-      { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 2, x: 3, y: 2 },
+      { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 1, x: 3, y: 2 },
+      { id: "qrcode", value: "QRコード", color: "#AC3DBE", icon: "mdi-qrcode-scan ", width: 1, x: 4, y: 2 },
       { id: "help", value: "使い方", color: "#45B093", icon: "mdi-help-circle", width: 2, height: 2, x: 1, y: 3 },
       { id: "bousai", value: "安否確認", color: "#7B3C38", icon: "mdi-home-heart", width: 2, height: 2, x: 3, y: 3 },
     ];
@@ -115,7 +116,9 @@
                   break;
                 case "help":
                   window.open(COMMON_JSON.help_url);
-                  // $$("ui_help").show();
+                  break;
+                case "qrcode":
+                  $$("ui_qrcode").show();
                   break;
                 default:
                   break;
@@ -125,17 +128,32 @@
         }
       ]
     };
-    //使い方
-    const ui_help = {
-      view: "window", id: "ui_help", head: "使い方", close: true, fullscreen: true, modal: true,
+    //QRCODE
+    import QrScanner from "./libs/qr-scanner/qr-scanner.min.js";
+    var qrScanner = null;
+    const ui_qrcode = {
+      view: "window", id: "ui_qrcode", head: "qrcode", close: true, fullscreen: true, modal: true,
       body: {
         rows: [
-          {
-            template: marked.parse('## 使い方\n\n 「ホーム画面に追加」することで、スマホから便利に使用できます。\n\n [iphoneの場合] \n\n ![iphone例](./images/iphone.png "iphone例")\n\n [androidの場合] \n\n ![android例](./images/android.png "iphone例")'),
-            scroll: "auto"
-          },
-          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_help").hide() } }
+          { view: "video", id: "qr-video", controls:false },
+          { view: "text", id: "ui_qrcode_txt" },
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_qrcode").hide() } }
         ]
+      },
+      on: {
+        onShow: function () {
+          qrScanner = new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode_txt").setValue(result),
+            {
+              highlightScanRegion: true,
+              highlightCodeOutline: true,
+            });
+          qrScanner.start();
+        },
+        onHide: function () {
+          qrScanner.stop();
+          qrScanner.destroy();
+          qrScanner = null;
+        }
       }
     };
     //メイン
@@ -144,7 +162,7 @@
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
       //サブ画面定義
-      webix.ui(ui_help);
+      webix.ui(ui_qrcode);
       //メイン画面
       webix.ui(ui_menu);
       ui_menu_logic.init();
