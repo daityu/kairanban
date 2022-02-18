@@ -135,14 +135,15 @@
       view: "window", id: "ui_qrcode", head: "qrcode", close: true, fullscreen: true, modal: true,
       body: {
         rows: [
-          { view: "video", id: "qr-video", controls:false },
+          { view: "video", id: "qr-video", controls: false },
           { view: "text", id: "ui_qrcode_txt" },
           { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_qrcode").hide() } }
         ]
       },
       on: {
         onShow: function () {
-          qrScanner = new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode_txt").setValue(result.data),
+          $$("ui_qrcode_txt").setValue("");
+          qrScanner = qrScanner || new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode_txt").setValue(result.data),
             {
               highlightScanRegion: true,
               highlightCodeOutline: true,
