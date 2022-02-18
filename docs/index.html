@@ -142,7 +142,7 @@
       },
       on: {
         onShow: function () {
-          qrScanner = new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode_txt").setValue(result),
+          qrScanner = new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode_txt").setValue(result.data),
             {
               highlightScanRegion: true,
               highlightCodeOutline: true,
