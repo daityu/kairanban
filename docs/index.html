@@ -40,17 +40,6 @@
           });
       });
     }
-    //設定ファイル取得
-    var COMMON_JSON = {
-      public_dir: '公開用フォルダ',
-      osirase_file: './pdf/oshirase.txt',
-      calendar_url: 'https://calendar.google.com/calendar/embed?src=nir9cd6majhgtvip8vm4umk3c4%40group.calendar.google.com&ctz=Asia%2FTokyo',
-      kairanban_dir: 'https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf',
-      gijiroku_dir: '議事録ディレクトリ',
-      benri_dir: './pdf/totsuka_life.pdf',
-      anpi_url: 'https://docs.google.com/forms/d/e/1FAIpQLSdDQwL-Uq2yZ25J3FspTnwoeX35sUc9wB6GFaeOUlfq8AT3bQ/viewform?usp=sf_link', //安否確認URL(google form)
-      help_url: './pdf/help.pdf'
-    };
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet" href="//cdn.webix.com/edge/skins/flat.min.css" type="text/css">
@@ -65,6 +54,8 @@
 
 <body>
   <script type="module">
+    //設定ファイル
+    var COMMON_JSON = {};
     //メイン画面
     const ui_menu_message = {};
     const ui_menu_data = [
@@ -77,7 +68,9 @@
     ];
     const ui_menu_logic = {
       init: function () {
-        webix.ajax().get(COMMON_JSON.osirase_file).then(function (data) {
+        // TODO ボタン化
+        // webix.ajax().get(COMMON_JSON.osirase_file).then(function (data) {
+        webix.ajax().get("./pdf/oshirase.txt").then(function (data) {
           $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
         });
       }
@@ -158,6 +151,9 @@
     //メイン
     webix.ready(function () {
       //初期処理
+      webix.ajax("./json/config.json").then(function (data) {
+        COMMON_JSON = data.json();
+      });
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
       //サブ画面定義

@@ -1,0 +1,10 @@
+{
+    "public_dir": "公開用フォルダ",
+    "osirase_file": "./pdf/oshirase.txt",
+    "calendar_url": "https://calendar.google.com/calendar/embed?src=nir9cd6majhgtvip8vm4umk3c4%40group.calendar.google.com&ctz=Asia%2FTokyo",
+    "kairanban_dir": "https://www.city.yokohama.lg.jp/totsuka/shokai/rekishi/welcome.files/0017_20181022.pdf",
+    "gijiroku_dir": "議事録ディレクトリ",
+    "benri_dir": "./pdf/totsuka_life.pdf",
+    "anpi_url": "https://docs.google.com/forms/d/e/1FAIpQLSdDQwL-Uq2yZ25J3FspTnwoeX35sUc9wB6GFaeOUlfq8AT3bQ/viewform?usp=sf_link",
+    "help_url": "./pdf/help.pdf"
+}
