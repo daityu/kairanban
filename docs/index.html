@@ -63,13 +63,12 @@
     //メイン画面メニューボタン部
     const ui_menu_message = {};
     const ui_menu_data = [
-      { id: "kairan", value: "回覧板", color: "#3D41B3", icon: "mdi-home", width: 2, height: 2, x: 1, y: 1 },
-      { id: "event", value: "イベント情報", color: "#703DB8", icon: "mdi-table-large", width: 2, x: 3, y: 1 },
-      { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 1, height: 2, x: 3, y: 2 },
-      { id: "qrcode", value: "QRコード", color: "#AC3DBE", icon: "mdi-qrcode-scan ", width: 1, height: 2, x: 4, y: 2 },
-      { id: "help", value: "使い方", color: "#45B093", icon: "mdi-help-circle", width: 2, height: 2, x: 1, y: 3 },
-      { id: "bousai", value: "安否確認", color: "#7B3C38", icon: "mdi-home-heart", width: 2, height: 1, x: 3, y: 4 },
-      { id: "oshirase", value: "お知らせ", color: "#3D41B3", icon: "mdi-information", width: 4, height: 2, x: 1, y: 5 },
+      { id: "kairan", value: "回覧板", color: "#3D41B3", icon: "mdi-file-check", width: 2, height: 2, x: 1, y: 1 },
+      { id: "event", value: "カレンダー", color: "#703DB8", icon: "mdi-table-large", height: 2, width: 2, x: 3, y: 1 },
+      { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 1, height: 2, x: 3, y: 3 },
+      { id: "qrcode", value: "QRコード", color: "#AC3DBE", icon: "mdi-qrcode-scan ", width: 1, height: 2, x: 4, y: 3 },
+      { id: "bousai", value: "安否確認", color: "#7B3C38", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
+      { id: "oshirase", value: "お知らせ", color: "#ff8000", icon: "mdi-information", width: 4, height: 2, x: 1, y: 5 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
@@ -78,19 +77,19 @@
         // webix.message(this.getItem(id).value);
         switch (id) {
           case "kairan":
-            window.open(COMMON_JSON.kairanban_dir);
+            ui_menu_logic.newTabOpen(COMMON_JSON.kairanban_dir);
             break;
           case "event":
-            window.open(COMMON_JSON.calendar_url);
+            ui_menu_logic.newTabOpen(COMMON_JSON.calendar_url);
             break;
           case "following":
-            window.open(COMMON_JSON.benri_dir);
+            ui_menu_logic.newTabOpen(COMMON_JSON.benri_dir);
             break;
           case "bousai":
-            window.open(COMMON_JSON.anpi_url);
+            ui_menu_logic.newTabOpen(COMMON_JSON.anpi_url);
             break;
           case "help":
-            window.open(COMMON_JSON.help_url);
+            ui_menu_logic.newTabOpen(COMMON_JSON.help_url);
             break;
           case "qrcode":
             $$("ui_qrcode").show();
@@ -101,6 +100,9 @@
           default:
             break;
         }
+      },
+      newTabOpen: function (_url) {
+        window.open(_url);
       }
     };
     //メイン画面レイアウト
@@ -108,25 +110,34 @@
       margin: 5, rows: [
         {
           view: "toolbar", cols: [
-            { view: "label", label: "○○○○○○自治会へようこそ" },
+            { view: "label", label: "○○○○○○自治会" },
+          ]
+        },
+        {
+          view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto",
+          on: { onItemClick: ui_menu_logic.menuBtnClick }
+        },
+        {
+          view: "toolbar", height: 65, css:{"background":"#5d80a2 !important"}, cols: [
+            { view: "button", type: "iconTop", icon: "mdi mdi-home", css: "webix_transparent", label: "ホーム" },
             {
-              view: "button", label: "設定", width: 100,
+              view: "button", type: "iconTop", icon: "mdi mdi-cogs", css: "webix_transparent", label: "設定",
               on: {
                 onItemClick: function () { $$("ui_setting").show() }
               }
             },
             {
-              view: "icon", icon: "mdi mdi-reload", align: "left", width: 50,
+              view: "button", type: "iconTop", icon: "mdi mdi-help", css: "webix_transparent", label: "ヘルプ",
+              on: { onItemClick: function () { ui_menu_logic.newTabOpen("./pdf/help.pdf"); } }
+            },
+            {
+              view: "button", type: "iconTop", icon: "mdi mdi-reload", css: "webix_transparent", label: "リロード", width: 100,
               on: {
                 onItemClick: function () { location.reload(true) }
               }
             }
           ]
         },
-        {
-          view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto",
-          on: { onItemClick: ui_menu_logic.menuBtnClick }
-        }
       ]
     };
     //window設定
