@@ -40,6 +40,9 @@
           });
       });
     }
+    // Client ID and API key from the Developer Console
+    var CLIENT_ID = '<YOUR_CLIENT_ID>';
+    var API_KEY = '<YOUR_API_KEY>';
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet" href="//cdn.webix.com/edge/skins/flat.min.css" type="text/css">
@@ -57,29 +60,61 @@
     //設定ファイル
     var COMMON_JSON = {};
     //メイン画面
+    //メイン画面メニューボタン部
     const ui_menu_message = {};
     const ui_menu_data = [
-      { id: "kairan", value: "今月の回覧板", color: "#3D41B3", icon: "mdi-home", width: 2, height: 2, x: 1, y: 1 },
+      { id: "kairan", value: "回覧板", color: "#3D41B3", icon: "mdi-home", width: 2, height: 2, x: 1, y: 1 },
       { id: "event", value: "イベント情報", color: "#703DB8", icon: "mdi-table-large", width: 2, x: 3, y: 1 },
       { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 1, height: 2, x: 3, y: 2 },
       { id: "qrcode", value: "QRコード", color: "#AC3DBE", icon: "mdi-qrcode-scan ", width: 1, height: 2, x: 4, y: 2 },
       { id: "help", value: "使い方", color: "#45B093", icon: "mdi-help-circle", width: 2, height: 2, x: 1, y: 3 },
       { id: "bousai", value: "安否確認", color: "#7B3C38", icon: "mdi-home-heart", width: 2, height: 1, x: 3, y: 4 },
+      { id: "oshirase", value: "お知らせ", color: "#3D41B3", icon: "mdi-information", width: 4, height: 2, x: 1, y: 5 },
     ];
+    //メイン画面ロジック部
     const ui_menu_logic = {
-      init: function () {
-        // TODO ボタン化
-        // webix.ajax().get(COMMON_JSON.osirase_file).then(function (data) {
-        webix.ajax().get("./pdf/oshirase.txt").then(function (data) {
-          $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
-        });
+      init: function () { },
+      menuBtnClick: function (id) {
+        // webix.message(this.getItem(id).value);
+        switch (id) {
+          case "kairan":
+            window.open(COMMON_JSON.kairanban_dir);
+            break;
+          case "event":
+            window.open(COMMON_JSON.calendar_url);
+            break;
+          case "following":
+            window.open(COMMON_JSON.benri_dir);
+            break;
+          case "bousai":
+            window.open(COMMON_JSON.anpi_url);
+            break;
+          case "help":
+            window.open(COMMON_JSON.help_url);
+            break;
+          case "qrcode":
+            $$("ui_qrcode").show();
+            break;
+          case "oshirase":
+            $$("ui_oshirase").show();
+            break;
+          default:
+            break;
+        }
       }
     };
+    //メイン画面レイアウト
     const ui_menu = {
-      rows: [
+      margin: 5, rows: [
         {
           view: "toolbar", cols: [
             { view: "label", label: "○○○○○○自治会へようこそ" },
+            {
+              view: "button", label: "設定", width: 100,
+              on: {
+                onItemClick: function () { $$("ui_setting").show() }
+              }
+            },
             {
               view: "icon", icon: "mdi mdi-reload", align: "left", width: 50,
               on: {
@@ -88,40 +123,61 @@
             }
           ]
         },
-        { view: "template", id: "ui_menu_oshirase", scroll: "auto" },
         {
-          view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto",
-          on: {
-            onItemClick: function (id) {
-              // webix.message(this.getItem(id).value);
-              switch (id) {
-                case "kairan":
-                  window.open(COMMON_JSON.kairanban_dir);
-                  break;
-                case "event":
-                  window.open(COMMON_JSON.calendar_url);
-                  break;
-                case "following":
-                  window.open(COMMON_JSON.benri_dir);
-                  break;
-                case "bousai":
-                  window.open(COMMON_JSON.anpi_url);
-                  break;
-                case "help":
-                  window.open(COMMON_JSON.help_url);
-                  break;
-                case "qrcode":
-                  $$("ui_qrcode").show();
-                  break;
-                default:
-                  break;
-              }
-            }
-          }
+          view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto",
+          on: { onItemClick: ui_menu_logic.menuBtnClick }
         }
       ]
     };
-    //QRCODE
+    //window設定
+    const ui_setting = {
+      view: "window", id: "ui_setting", head: "設定", close: true, fullscreen: true, modal: true,
+      body: {
+        rows: [
+          {
+            view: "form", id: "ui_setting_form",
+            elements: [
+              { view: "label", label: "申込みに必要な情報を、あらかじめ入力することができます。" },
+              { view: "text", name: "name", label: "お名前" },
+              { view: "text", name: "zipcode", label: "郵便便号", pattern: { mask: "###-####", allow: /[0-9]/g } },
+              { view: "text", name: "address", label: "住所" },
+              { view: "text", name: "tel", label: "電話番号" },
+              {}
+            ]
+          },
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_setting").hide() } }
+        ]
+      },
+      on: {
+        onShow: function () {
+          $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form"));
+        },
+        onHide: function () {
+          var _v = $$("ui_setting_form").getValues();
+          webix.storage.local.put("ui_setting_form", _v);
+        }
+      }
+    };
+    //windowお知らせ（markdownビューア）
+    const ui_oshirase = {
+      view: "window", id: "ui_oshirase", head: "お知らせ", close: true, fullscreen: true, modal: true,
+      body: {
+        rows: [
+          { view: "template", id: "ui_menu_oshirase", scroll: "auto" },
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_oshirase").hide() } }
+        ]
+      },
+      on: {
+        onShow: function () {
+          webix.ajax().get("./pdf/oshirase.txt").then(function (data) {
+            $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
+          });
+        },
+        onHide: function () {
+        }
+      }
+    };
+    //windowQRCODE
     import QrScanner from "./libs/qr-scanner/qr-scanner.min.js";
     var qrScanner = null;
     const ui_qrcode = {
@@ -158,6 +214,8 @@
       webix.i18n.setLocale("ja-JP");
       //サブ画面定義
       webix.ui(ui_qrcode);
+      webix.ui(ui_oshirase);
+      webix.ui(ui_setting);
       //メイン画面
       webix.ui(ui_menu);
       ui_menu_logic.init();
