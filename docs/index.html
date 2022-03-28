@@ -131,7 +131,7 @@
                   webix.storage.local.put("ui_setting_form", _v);
                 },
                 onViewShow: function () {
-                  $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form"));
+                  $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form")||[]);
                 }
               }
             },
