@@ -29,10 +29,6 @@
     .webix_cal_month_name {
       font-size: 14pt !important;
     }
-
-    div.webix_view.webix_control.webix_el_segmented.bottommenu .webix_selected {
-      /* color: #F28274; */
-    }
   </style>
   <script type="text/javascript">
     // CODELAB: Register service worker.
@@ -66,12 +62,12 @@
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
-      { id: "kairan", value: "回覧板", color: "#3D41B3", icon: "mdi-file-check", width: 2, height: 2, x: 1, y: 1 },
-      { id: "event", value: "カレンダー", color: "#703DB8", icon: "mdi-table-large", height: 2, width: 2, x: 3, y: 1 },
-      { id: "following", value: "生活便利帳", color: "#AC3DBE", icon: "mdi-share", width: 1, height: 2, x: 3, y: 3 },
-      { id: "qrcode", value: "QRコード", color: "#AC3DBE", icon: "mdi-qrcode-scan ", width: 1, height: 2, x: 4, y: 3 },
-      { id: "bousai", value: "安否確認", color: "#7B3C38", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
-      { id: "oshirase", value: "お知らせ", color: "#ff8000", icon: "mdi-information", width: 4, height: 2, x: 1, y: 5 },
+      { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-file-check", width: 2, height: 2, x: 1, y: 1 },
+      { id: "event", value: "カレンダー", color: "#3da9fc", icon: "mdi-table-large", height: 2, width: 2, x: 3, y: 1 },
+      { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
+      { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 1, height: 2, x: 3, y: 3 },
+      { id: "qrcode", value: "QRコード", color: "#5f6c7b", icon: "mdi-qrcode-scan ", width: 1, height: 2, x: 4, y: 3 },
+      { id: "oshirase", value: "お知らせ", color: "#ff8906", icon: "mdi-information", width: 4, height: 2, x: 1, y: 5 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
@@ -122,43 +118,44 @@
             {
               view: "form", id: "ui_setting_form",
               elements: [
-                { template: "共通情報を、あらかじめ入力することができます。", height:100},
+                { template: "共通情報を、あらかじめ入力することができます。", height: 100 },
                 { view: "text", name: "name", label: "お名前" },
                 { view: "text", name: "zipcode", label: "郵便便号", pattern: { mask: "###-####", allow: /[0-9]/g } },
                 { view: "text", name: "address", label: "住所" },
                 { view: "text", name: "tel", label: "電話番号" },
                 {}
               ],
-              on:{
-                onChange:function(){
+              on: {
+                onChange: function () {
                   var _v = $$("ui_setting_form").getValues();
                   webix.storage.local.put("ui_setting_form", _v);
+                },
+                onViewShow: function () {
+                  $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form"));
+                }
+              }
+            },
+            {
+              view: "template", id: "ui_help", scroll: "auto",
+              on: {
+                onViewShow: function () {
+                  webix.ajax().get("./help/help.md").then(function (data) {
+                    $$("ui_help").setHTML(marked.parse(data.text()));
+                  });
                 }
               }
             }
-          ], borderless: true,
-          on: {
-            onViewChange: function (prevID, nextID) {
-              console.log(prevID, nextID);
-              if (nextID == "ui_setting_form") {
-                $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form"));
-              }
-            }
-          }
+          ], borderless: true
         },
         {
           view: "segmented", type: "bottom", multiview: true, css: "bottommenu", value: "winmenu", options: [
             { value: "<span class='webix_icon mdi mdi-24px mdi-home'></span><br><span>ホーム</span>", id: "winmenu" },
             { value: "<span class='webix_icon mdi mdi-24px mdi-cogs'></span><br><span>設定</span>", id: "ui_setting_form" },
-            { value: "<span class='webix_icon mdi mdi-24px mdi-help'></span><br><span>ヘルプ</span>", id: "help" },
+            { value: "<span class='webix_icon mdi mdi-24px mdi-help'></span><br><span>ヘルプ</span>", id: "ui_help" },
             { value: "<span class='webix_icon mdi mdi-24px mdi-reload'></span><br><span>リロード</span>", id: "reload" }
           ], height: 65, borderless: true,
           on: {
             onAfterTabClick: function (id) {
-              console.log(id);
-              if (id == "help") {
-                ui_menu_logic.newTabOpen(COMMON_JSON.help_url);
-              }
               if (id == "reload") {
                 location.reload(true);
               }
