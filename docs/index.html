@@ -29,6 +29,10 @@
     .webix_cal_month_name {
       font-size: 14pt !important;
     }
+
+    div.webix_view.webix_control.webix_el_segmented.bottommenu .webix_selected {
+      /* color: #F28274; */
+    }
   </style>
   <script type="text/javascript">
     // CODELAB: Register service worker.
@@ -61,7 +65,6 @@
     var COMMON_JSON = {};
     //メイン画面
     //メイン画面メニューボタン部
-    const ui_menu_message = {};
     const ui_menu_data = [
       { id: "kairan", value: "回覧板", color: "#3D41B3", icon: "mdi-file-check", width: 2, height: 2, x: 1, y: 1 },
       { id: "event", value: "カレンダー", color: "#703DB8", icon: "mdi-table-large", height: 2, width: 2, x: 3, y: 1 },
@@ -88,9 +91,6 @@
           case "bousai":
             ui_menu_logic.newTabOpen(COMMON_JSON.anpi_url);
             break;
-          case "help":
-            ui_menu_logic.newTabOpen(COMMON_JSON.help_url);
-            break;
           case "qrcode":
             $$("ui_qrcode").show();
             break;
@@ -107,68 +107,67 @@
     };
     //メイン画面レイアウト
     const ui_menu = {
-      margin: 5, rows: [
+      rows: [
         {
           view: "toolbar", cols: [
             { view: "label", label: "○○○○○○自治会" },
           ]
         },
         {
-          view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto",
-          on: { onItemClick: ui_menu_logic.menuBtnClick }
-        },
-        {
-          view: "toolbar", height: 65, css:{"background":"#5d80a2 !important"}, cols: [
-            { view: "button", type: "iconTop", icon: "mdi mdi-home", css: "webix_transparent", label: "ホーム" },
+          cells: [
             {
-              view: "button", type: "iconTop", icon: "mdi mdi-cogs", css: "webix_transparent", label: "設定",
-              on: {
-                onItemClick: function () { $$("ui_setting").show() }
-              }
+              view: "winmenu", id: "winmenu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto",
+              on: { onItemClick: ui_menu_logic.menuBtnClick }
             },
             {
-              view: "button", type: "iconTop", icon: "mdi mdi-help", css: "webix_transparent", label: "ヘルプ",
-              on: { onItemClick: function () { ui_menu_logic.newTabOpen("./pdf/help.pdf"); } }
-            },
-            {
-              view: "button", type: "iconTop", icon: "mdi mdi-reload", css: "webix_transparent", label: "リロード", width: 100,
-              on: {
-                onItemClick: function () { location.reload(true) }
+              view: "form", id: "ui_setting_form",
+              elements: [
+                { template: "共通情報を、あらかじめ入力することができます。", height:100},
+                { view: "text", name: "name", label: "お名前" },
+                { view: "text", name: "zipcode", label: "郵便便号", pattern: { mask: "###-####", allow: /[0-9]/g } },
+                { view: "text", name: "address", label: "住所" },
+                { view: "text", name: "tel", label: "電話番号" },
+                {}
+              ],
+              on:{
+                onChange:function(){
+                  var _v = $$("ui_setting_form").getValues();
+                  webix.storage.local.put("ui_setting_form", _v);
+                }
               }
             }
-          ]
+          ], borderless: true,
+          on: {
+            onViewChange: function (prevID, nextID) {
+              console.log(prevID, nextID);
+              if (nextID == "ui_setting_form") {
+                $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form"));
+              }
+            }
+          }
         },
+        {
+          view: "segmented", type: "bottom", multiview: true, css: "bottommenu", value: "winmenu", options: [
+            { value: "<span class='webix_icon mdi mdi-24px mdi-home'></span><br><span>ホーム</span>", id: "winmenu" },
+            { value: "<span class='webix_icon mdi mdi-24px mdi-cogs'></span><br><span>設定</span>", id: "ui_setting_form" },
+            { value: "<span class='webix_icon mdi mdi-24px mdi-help'></span><br><span>ヘルプ</span>", id: "help" },
+            { value: "<span class='webix_icon mdi mdi-24px mdi-reload'></span><br><span>リロード</span>", id: "reload" }
+          ], height: 65, borderless: true,
+          on: {
+            onAfterTabClick: function (id) {
+              console.log(id);
+              if (id == "help") {
+                ui_menu_logic.newTabOpen(COMMON_JSON.help_url);
+              }
+              if (id == "reload") {
+                location.reload(true);
+              }
+            }
+          }
+        }
       ]
     };
     //window設定
-    const ui_setting = {
-      view: "window", id: "ui_setting", head: "設定", close: true, fullscreen: true, modal: true,
-      body: {
-        rows: [
-          {
-            view: "form", id: "ui_setting_form",
-            elements: [
-              { view: "label", label: "申込みに必要な情報を、あらかじめ入力することができます。" },
-              { view: "text", name: "name", label: "お名前" },
-              { view: "text", name: "zipcode", label: "郵便便号", pattern: { mask: "###-####", allow: /[0-9]/g } },
-              { view: "text", name: "address", label: "住所" },
-              { view: "text", name: "tel", label: "電話番号" },
-              {}
-            ]
-          },
-          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_setting").hide() } }
-        ]
-      },
-      on: {
-        onShow: function () {
-          $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form"));
-        },
-        onHide: function () {
-          var _v = $$("ui_setting_form").getValues();
-          webix.storage.local.put("ui_setting_form", _v);
-        }
-      }
-    };
     //windowお知らせ（markdownビューア）
     const ui_oshirase = {
       view: "window", id: "ui_oshirase", head: "お知らせ", close: true, fullscreen: true, modal: true,
@@ -226,7 +225,6 @@
       //サブ画面定義
       webix.ui(ui_qrcode);
       webix.ui(ui_oshirase);
-      webix.ui(ui_setting);
       //メイン画面
       webix.ui(ui_menu);
       ui_menu_logic.init();
