@@ -62,8 +62,8 @@
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
-      { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-file-check", width: 2, height: 2, x: 1, y: 1 },
-      { id: "event", value: "カレンダー", color: "#3da9fc", icon: "mdi-table-large", height: 2, width: 2, x: 3, y: 1 },
+      { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 1 },
+      { id: "event", value: "カレンダー", color: "#3da9fc", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
       { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
       { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 1, height: 2, x: 3, y: 3 },
       { id: "qrcode", value: "QRコード", color: "#5f6c7b", icon: "mdi-qrcode-scan ", width: 1, height: 2, x: 4, y: 3 },
@@ -131,7 +131,7 @@
                   webix.storage.local.put("ui_setting_form", _v);
                 },
                 onViewShow: function () {
-                  $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form")||[]);
+                  $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form") || {});
                 }
               }
             },
@@ -139,7 +139,7 @@
               view: "template", id: "ui_help", scroll: "auto",
               on: {
                 onViewShow: function () {
-                  webix.ajax().get("./help/help.md").then(function (data) {
+                  webix.ajax().get("./help.md").then(function (data) {
                     $$("ui_help").setHTML(marked.parse(data.text()));
                   });
                 }
