@@ -118,12 +118,36 @@
             {
               view: "form", id: "ui_setting_form",
               elements: [
-                { template: "共通情報を、あらかじめ入力することができます。", height: 100 },
+                { template: "共通情報を、あらかじめ入力することができます。", height: 60, borderless: true },
                 { view: "text", name: "name", label: "お名前" },
-                { view: "text", name: "zipcode", label: "郵便便号", pattern: { mask: "###-####", allow: /[0-9]/g } },
+                {
+                  cols: [
+                    { view: "text", name: "zipcode", label: "郵便便号", attributes: { maxlength: 7 }, width: 200 },
+                    {
+                      view: "button", label: "住所検索", width: 100,
+                      on: {
+                        onItemClick: function () {
+                          var _p = $$("ui_setting_form").getValues()["zipcode"] || "";
+                          if (!_p || _p.length != 7) return;
+                          webix.ajax().get("https://geoapi.heartrails.com/api/json?method=searchByPostal", { postal: _p }).then(function (data) {
+                            var _r = data.json();
+                            if (_r.response.error) {
+                              webix.message("郵便番号に該当する住所がありません");
+                              return;
+                            }
+                            var _addr = _r.response.location[0].city + _r.response.location[0].town;
+                            $$("ui_setting_form").setValues({ address: _addr }, true);
+                            $$("ui_setting_form").callEvent("onChange");
+                          });
+                        }
+                      }
+                    },
+                    {}
+                  ]
+                },
                 { view: "text", name: "address", label: "住所" },
                 { view: "text", name: "tel", label: "電話番号" },
-                {}
+                { template: "出典:「位置参照情報」(国土交通省)の加工情報・「HeartRails Geo API」(HeartRails Inc.)", borderless: true },
               ],
               on: {
                 onChange: function () {
