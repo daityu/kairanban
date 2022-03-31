@@ -107,6 +107,26 @@
         {
           view: "toolbar", cols: [
             { view: "label", label: "○○○○○○自治会" },
+            {
+              view: "menu", width: 40, data: [
+                {
+                  id: "2", value: "", icon: "mdi mdi-24px mdi-menu", config: {
+                    on: {
+                      onItemClick: function (id) {
+                        webix.message("Submenu click: " + id);
+                        if (id == "reload") {
+                          location.reload(true);
+                        }
+                      }
+                    }
+                  },
+                  submenu: [
+                    { icon: "mdi mdi-reload", value: "再表示", id: "reload" },
+                    { icon: "mdi mdi-cog", value: "システム情報", id: "systeminfo" }
+                  ]
+                }
+              ]
+            }
           ]
         },
         {
@@ -122,7 +142,7 @@
                 { view: "text", name: "name", label: "お名前" },
                 {
                   cols: [
-                    { view: "text", name: "zipcode", label: "郵便便号", attributes: { maxlength: 7 }, width: 200 },
+                    { view: "text", name: "zipcode", label: "郵便便号", placeholder: "(半角数字のみ)", attributes: { maxlength: 7 }, width: 220 },
                     {
                       view: "button", label: "住所検索", width: 100,
                       on: {
