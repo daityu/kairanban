@@ -71,7 +71,9 @@
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
-      init: function () { },
+      init: function () {
+        $$("group_name").setValue(COMMON_JSON.group_name);
+      },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
         switch (id) {
@@ -120,7 +122,7 @@
       rows: [
         {
           view: "toolbar", cols: [
-            { view: "label", label: "○○○○○○自治会" },
+            { view: "label", id: "group_name", label: "" },
             {
               view: "menu", width: 40, data: [
                 {
@@ -296,18 +298,20 @@
     //メイン
     webix.ready(function () {
       //初期処理
-      webix.ajax("./json/config.json").then(function (data) {
-        COMMON_JSON = data.json();
-      });
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
-      //サブ画面定義
-      webix.ui(ui_qrcode);
-      webix.ui(ui_oshirase);
-      webix.ui(ui_systemsetting);
-      //メイン画面
-      webix.ui(ui_menu);
-      ui_menu_logic.init();
+      //設定ファイル取得
+      webix.ajax("./json/config.json").then(function (data) {
+        COMMON_JSON = data.json();
+      }).then(function () {
+        //サブ画面定義
+        webix.ui(ui_qrcode);
+        webix.ui(ui_oshirase);
+        webix.ui(ui_systemsetting);
+        //メイン画面
+        webix.ui(ui_menu);
+        ui_menu_logic.init();
+      });
     });
   </script>
 </body>
