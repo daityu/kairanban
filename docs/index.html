@@ -113,16 +113,21 @@
                   id: "2", value: "", icon: "mdi mdi-24px mdi-menu", config: {
                     on: {
                       onItemClick: function (id) {
-                        webix.message("Submenu click: " + id);
-                        if (id == "reload") {
-                          location.reload(true);
+                        switch (id) {
+                          case "systemsetting":
+                            $$("ui_systemsetting").show();
+                            break;
+                          case "close":
+                            break;
+                          default:
+                            break;
                         }
                       }
                     }
                   },
                   submenu: [
-                    { icon: "mdi mdi-reload", value: "再表示", id: "reload" },
-                    { icon: "mdi mdi-cog", value: "システム情報", id: "systeminfo" }
+                    { icon: "mdi mdi-cog", value: "システム設定", id: "systemsetting" },
+                    { icon: "mdi mdi-close", value: "キャンセル", id: "close" }
                   ]
                 }
               ]
@@ -138,8 +143,9 @@
             {
               view: "form", id: "ui_setting_form",
               elements: [
-                { template: "共通情報を、あらかじめ入力することができます。", height: 60, borderless: true },
+                { template: "イベント申込みや安否確認時に必要になる項目、あらかじめ入力することができます。", height: 60, borderless: true },
                 { view: "text", name: "name", label: "お名前" },
+                { view: "text", name: "emailAddress", label: "メール", type:"email", placeholder: "name@example.com" },
                 {
                   cols: [
                     { view: "text", name: "zipcode", label: "郵便便号", placeholder: "(半角数字のみ)", attributes: { maxlength: 7 }, width: 220 },
@@ -195,7 +201,7 @@
         {
           view: "segmented", type: "bottom", multiview: true, css: "bottommenu", value: "winmenu", options: [
             { value: "<span class='webix_icon mdi mdi-24px mdi-home'></span><br><span>ホーム</span>", id: "winmenu" },
-            { value: "<span class='webix_icon mdi mdi-24px mdi-cogs'></span><br><span>設定</span>", id: "ui_setting_form" },
+            { value: "<span class='webix_icon mdi mdi-24px mdi-account'></span><br><span>個人設定</span>", id: "ui_setting_form" },
             { value: "<span class='webix_icon mdi mdi-24px mdi-help'></span><br><span>ヘルプ</span>", id: "ui_help" },
             { value: "<span class='webix_icon mdi mdi-24px mdi-reload'></span><br><span>リロード</span>", id: "reload" }
           ], height: 65, borderless: true,
@@ -224,6 +230,23 @@
           webix.ajax().get("./pdf/oshirase.txt").then(function (data) {
             $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
           });
+        },
+        onHide: function () {
+        }
+      }
+    };
+    //window設定
+    //システム設定
+    const ui_systemsetting = {
+      view: "window", id: "ui_systemsetting", head: "システム設定", close: true, fullscreen: true, modal: true,
+      body: {
+        rows: [
+          { view: "template", id: "ui_systemsetting_form", scroll: "auto" },
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_systemsetting").hide() } }
+        ]
+      },
+      on: {
+        onShow: function () {
         },
         onHide: function () {
         }
@@ -267,6 +290,7 @@
       //サブ画面定義
       webix.ui(ui_qrcode);
       webix.ui(ui_oshirase);
+      webix.ui(ui_systemsetting);
       //メイン画面
       webix.ui(ui_menu);
       ui_menu_logic.init();
