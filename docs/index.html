@@ -88,12 +88,11 @@
             break;
           case "bousai":
             let url = new URL(COMMON_JSON.anpi_url);
-            console.log(url);
             let params = url.searchParams;
             let _ls = webix.storage.local.get("ui_setting_form") || {};
             let _np = [];
             params.forEach(function (value, key) {
-              _np.push(key + "=" + encodeURI(_ls[value] || value || ""));
+              _np.push(key + "=" + encodeURI(_ls[value] || ""));
             });
             ui_menu_logic.newTabOpen(url.origin + url.pathname + "?" + _np.join("&"));
             break;
