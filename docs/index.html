@@ -65,8 +65,8 @@
       { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 1 },
       { id: "event", value: "カレンダー", color: "#3da9fc", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
       { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
-      { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 1, height: 2, x: 3, y: 3 },
-      { id: "qrcode", value: "QRコード", color: "#5f6c7b", icon: "mdi-qrcode-scan ", width: 1, height: 2, x: 4, y: 3 },
+      { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
+      // { id: "qrcode", value: "QRコード", color: "#5f6c7b", icon: "mdi-qrcode-scan", width: 1, height: 2, x: 4, y: 3 },
       { id: "oshirase", value: "お知らせ", color: "#ff8906", icon: "mdi-information", width: 4, height: 2, x: 1, y: 5 },
     ];
     //メイン画面ロジック部
@@ -231,7 +231,7 @@
       body: {
         rows: [
           { view: "template", id: "ui_menu_oshirase", scroll: "auto" },
-          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_oshirase").hide() } }
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
       },
       on: {
@@ -250,8 +250,27 @@
       view: "window", id: "ui_systemsetting", head: "システム設定", close: true, fullscreen: true, modal: true,
       body: {
         rows: [
-          { view: "template", id: "ui_systemsetting_form", scroll: "auto" },
-          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_systemsetting").hide() } }
+          {
+            view: "form", id: "ui_systemsetting_form", elements: [
+              { view: "text", label: "API_KEY", name: "API_KEY", labelWidth: 120, readonly: true },
+              { view: "text", label: "CLIENT_ID", name: "CLIENT_ID", labelWidth: 120, readonly: true },
+              {
+                view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", on: {
+                  onItemClick: function () {
+                    $$("ui_qrcode").define("CB", function (m) {
+                      webix.message(m);
+                      $$("ui_systemsetting_form").setValues({ API_KEY: m }, true);
+                      $$("ui_qrcode").hide();
+                      //TODO LS保存
+                    });
+                    $$("ui_qrcode").show();
+                  }
+                }
+              }
+            ]
+          },
+          {},
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
       },
       on: {
@@ -265,18 +284,18 @@
     import QrScanner from "./libs/qr-scanner/qr-scanner.min.js";
     var qrScanner = null;
     const ui_qrcode = {
-      view: "window", id: "ui_qrcode", head: "qrcode", close: true, fullscreen: true, modal: true,
+      view: "window", id: "ui_qrcode", head: "qrcode", close: true, fullscreen: true, modal: true, CB: null,
       body: {
         rows: [
           { view: "video", id: "qr-video", controls: false },
           { view: "text", id: "ui_qrcode_txt" },
-          { view: "button", height: 60, label: "閉じる", click: function (id, event) { $$("ui_qrcode").hide() } }
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
       },
       on: {
         onShow: function () {
           $$("ui_qrcode_txt").setValue("");
-          qrScanner = qrScanner || new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode_txt").setValue(result.data),
+          qrScanner = qrScanner || new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode").config.CB(result.data),
             {
               highlightScanRegion: true,
               highlightCodeOutline: true,
