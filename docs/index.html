@@ -85,7 +85,21 @@
             ui_menu_logic.newTabOpen(COMMON_JSON.benri_dir);
             break;
           case "bousai":
-            ui_menu_logic.newTabOpen(COMMON_JSON.anpi_url);
+            //TODO 読み替えテーブルの設定が難しいため簡略する方法が必要
+            var _p2u = {
+              "entry.1995412284": "name",
+              "entry.1413767876": "emailAddress",
+              "entry.1442073316": "address",
+              "entry.2109985120": "address2"
+            };
+            var _ls = webix.storage.local.get("ui_setting_form") || {};
+            var _param = ["?usp=pp_url"];
+            Object.keys(_p2u).forEach(function (key) {
+              // console.log("キー : " + key + ", 値 : " + _p2u[key] + ", LS値 : " + (_ls[_p2u[key]] || ""));
+              _param.push(key + "=" + encodeURI(_ls[_p2u[key]] || ""));
+            });
+            // console.log(_param.join("&"));
+            ui_menu_logic.newTabOpen(COMMON_JSON.anpi_url + _param.join("&"));
             break;
           case "qrcode":
             $$("ui_qrcode").show();
@@ -143,9 +157,9 @@
             {
               view: "form", id: "ui_setting_form",
               elements: [
-                { template: "イベント申込みや安否確認時に必要になる項目、あらかじめ入力することができます。", height: 60, borderless: true },
+                { template: "イベント申込みや安否確認時に必要になる項目を、あらかじめ入力することができます。", height: 60, borderless: true },
                 { view: "text", name: "name", label: "お名前" },
-                { view: "text", name: "emailAddress", label: "メール", type:"email", placeholder: "name@example.com" },
+                { view: "text", name: "emailAddress", label: "メール", type: "email", placeholder: "name@example.com" },
                 {
                   cols: [
                     { view: "text", name: "zipcode", label: "郵便便号", placeholder: "(半角数字のみ)", attributes: { maxlength: 7 }, width: 220 },
