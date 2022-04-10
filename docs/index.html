@@ -40,12 +40,10 @@
           });
       });
     }
-    // Client ID and API key from the Developer Console
-    var CLIENT_ID = '<YOUR_CLIENT_ID>';
-    var API_KEY = 'AIzaSyDBGYpmd824w5sXtyCIfWDXvm5rxutxRzY';
-
+    var API_KEY = "AKfycbx-7QQ1Nr6c0wFDOr_dFYdlEvGMNLNBBRi2jHS68ZlQ4E-dgqvycsh3F4QC1HzKzLpT9Q";
   </script>
   <link rel="shortcut icon" href="favicon.ico">
+  <script src="./libs/Common.js"></script>
   <link rel="stylesheet" href="//cdn.webix.com/edge/skins/flat.min.css" type="text/css">
   <link rel="stylesheet" href="//cdn.webix.com/materialdesignicons/5.8.95/css/materialdesignicons.min.css"
     type="text/css" charset="utf-8">
@@ -74,27 +72,6 @@
     const ui_menu_logic = {
       init: function () {
         $$("group_name").setValue(COMMON_JSON.group_name);
-        // google drive
-        // webix.ajax().get("https://www.googleapis.com/drive/v3/files", {//TODO google driveはユーザ指定の共有が必要。FTPのようにはいかない。
-        //   key: "AIzaSyDBGYpmd824w5sXtyCIfWDXvm5rxutxRzY",
-        //   supportsAllDrives: true,
-        //   includeItemsFromAllDrives: true,
-        //   corpora: "drive",
-        //   driveId: "1OaIqX5pyOavCMbMPE8OJCyOOdgHpr5Rl"
-        // }).then(function (data) {
-        //   var _r = data.json();
-        //   console.log(r);
-        // });
-        webix.ajax().get("https://www.googleapis.com/drive/v3/files/1JrIufMm4I9RS_29DHsK1Whc8gyF3gmLYFFg5jIycvlE", {//TODO google driveはユーザ指定の共有が必要。FTPのようにはいかない。
-          key: "AIzaSyDBGYpmd824w5sXtyCIfWDXvm5rxutxRzY"
-        }).then(function (data) {
-          var _r = data.json();
-          console.log(r);
-        });
-        //GET https://www.googleapis.com/drive/v3/files/fileId
-        // filegetならいける。フォルダ配下の取得ができない。
-        // https://docs.google.com/document/d/1JrIufMm4I9RS_29DHsK1Whc8gyF3gmLYFFg5jIycvlE/edit?usp=sharing
-        // TODO GoogleSpredSheetのWebAPI機能を使用して、JSONファイルを配布する
       },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
@@ -275,7 +252,8 @@
       },
       on: {
         onShow: function () {
-          webix.ajax().get("https://script.googleusercontent.com/macros/echo?user_content_key=-qxiKnNUxcsVV-lJlte2wfG6zu1BwHca_JrTGLH93Xl8xpb6Kkqk0XMuLIUMgQX6qml5VDS-dJOdVDej0ZxCVbdaPwVg2CyQm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMUQ7ov0c9_QaxMxdiYh1f5ovNIe6p_l7xIfyzye6l53nYS6yckWhwZQu7Bv_-JRwfMAlHnbopjvqEFsubXM3prFOZSui_yKNtz9Jw9Md8uu&lib=MKtEuNO4MHrF8TNbmjpTuldEdJsGIUS_Z").then(function (data) {
+          var _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
+          webix.ajax().get(_url).then(function (data) {
             var _json = data.json();
             $$("ui_files_list").parse(_json)
           });
