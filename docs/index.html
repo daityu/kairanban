@@ -40,7 +40,7 @@
           });
       });
     }
-    var API_KEY = "AKfycbx-7QQ1Nr6c0wFDOr_dFYdlEvGMNLNBBRi2jHS68ZlQ4E-dgqvycsh3F4QC1HzKzLpT9Q";
+    var API_KEY = "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <script src="./libs/Common.js"></script>
@@ -66,38 +66,41 @@
       { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
       { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
       // { id: "qrcode", value: "QRコード", color: "#5f6c7b", icon: "mdi-qrcode-scan", width: 1, height: 2, x: 4, y: 3 },
-      { id: "oshirase", value: "お知らせ", color: "#ff8906", icon: "mdi-information", width: 4, height: 2, x: 1, y: 5 },
+      { id: "oshirase", value: "お知らせ", color: "#ff8906", icon: "mdi-information", width: 2, height: 2, x: 1, y: 5 },
+      { id: "moushikomi", value: "参加申込", color: "#ff8906", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 5 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
       init: function () {
-        $$("group_name").setValue(COMMON_JSON.group_name);
+        $$("group_name").setValue(COMMON_JSON.config.group_name);
       },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
         switch (id) {
           case "kairan":
-            // ui_menu_logic.newTabOpen("https://docs.google.com/document/d/1JrIufMm4I9RS_29DHsK1Whc8gyF3gmLYFFg5jIycvlE");
+            $$("ui_files").define("kubun", "kairanban");
             $$("ui_files").show();
             break;
           case "event":
-            ui_menu_logic.newTabOpen(COMMON_JSON.calendar_url);
+            ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
             break;
           case "following":
-            ui_menu_logic.newTabOpen(COMMON_JSON.benri_dir);
+            ui_menu_logic.newTabOpen(COMMON_JSON.config.benri_dir);
             break;
           case "bousai":
-            let url = new URL(COMMON_JSON.anpi_url);
-            let params = url.searchParams;
-            let _ls = webix.storage.local.get("ui_setting_form") || {};
-            let _np = [];
-            params.forEach(function (value, key) {
-              _np.push(key + "=" + encodeURI(_ls[value] || ""));
-            });
-            ui_menu_logic.newTabOpen(url.origin + url.pathname + "?" + _np.join("&"));
+            ui_menu_logic.newTabOpen(ui_menu_logic.gform2url(COMMON_JSON.config.anpi_url));
+            // let url = new URL(COMMON_JSON.config.anpi_url);
+            // let params = url.searchParams;
+            // let _ls = webix.storage.local.get("ui_setting_form") || {};
+            // let _np = [];
+            // params.forEach(function (value, key) {
+            //   _np.push(key + "=" + encodeURI(_ls[value] || ""));
+            // });
+            // ui_menu_logic.newTabOpen(url.origin + url.pathname + "?" + _np.join("&"));
             break;
-          case "qrcode":
-            $$("ui_qrcode").show();
+          case "moushikomi":
+            $$("ui_files").define("kubun", "moushikomi");
+            $$("ui_files").show();
             break;
           case "oshirase":
             $$("ui_oshirase").show();
@@ -117,6 +120,16 @@
           _vid = (_vid.length > element.length) ? _vid : element;
         });
         return "{0}/uc?id={1}".format([_url.origin, _vid]);
+      },
+      gform2url: function (gform) {
+        let url = new URL(gform);
+        let params = url.searchParams;
+        let _ls = webix.storage.local.get("ui_setting_form") || {};
+        let _np = [];
+        params.forEach(function (value, key) {
+          _np.push(key + "=" + encodeURI(_ls[value] || ""));
+        });
+        return url.origin + url.pathname + "?" + _np.join("&");
       }
     };
     //メイン画面レイアウト
@@ -236,7 +249,7 @@
     //window設定
     //googleDriveファイル一覧
     const ui_files = {
-      view: "window", id: "ui_files", head: "ファイル一覧", close: true, fullscreen: true, modal: true,
+      view: "window", id: "ui_files", head: "ファイル一覧", close: true, fullscreen: true, modal: true, kubun: "kairanban",
       body: {
         rows: [
           {
@@ -252,7 +265,11 @@
                 if (!_item.fileId) {
                   return;
                 }
-                ui_menu_logic.newTabOpen(ui_menu_logic.gdrive2url(_item.fileId));
+                if (this.getTopParentView().config.kubun == "kairanban") {//googledriveを参照
+                  ui_menu_logic.newTabOpen(ui_menu_logic.gdrive2url(_item.fileId));
+                } else {//googleformを参照
+                  ui_menu_logic.newTabOpen(ui_menu_logic.gform2url(_item.fileId));
+                }
               }
             }
           },
@@ -261,11 +278,9 @@
       },
       on: {
         onShow: function () {
-          let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
-          webix.ajax().get(_url).then(function (data) {
-            let _json = data.json();
-            $$("ui_files_list").parse(_json)
-          });
+          let _kubun = this.getTopParentView().config.kubun;
+          let _data = webix.copy(COMMON_JSON[_kubun]);
+          $$("ui_files_list").parse(_data);
         },
         onHide: function () {
         }
@@ -359,8 +374,9 @@
       //初期処理
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
-      //設定ファイル取得 TODO googleDrive
-      webix.ajax("./json/config.json").then(function (data) {
+      //設定ファイル取得
+      let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
+      webix.ajax().get(_url).then(function (data) {
         COMMON_JSON = data.json();
       }).then(function () {
         //サブ画面定義

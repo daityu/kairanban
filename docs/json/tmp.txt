@@ -1,7 +1,0 @@
-AIzaSyDBGYpmd824w5sXtyCIfWDXvm5rxutxRzY
-
-drive_id:
-1OaIqX5pyOavCMbMPE8OJCyOOdgHpr5Rl
-
-config.json
-https://drive.google.com/file/d/1PfXsUkIP7VndLjj0SksOXUBygLIktmts/view?usp=sharing
