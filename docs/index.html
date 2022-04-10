@@ -42,7 +42,8 @@
     }
     // Client ID and API key from the Developer Console
     var CLIENT_ID = '<YOUR_CLIENT_ID>';
-    var API_KEY = '<YOUR_API_KEY>';
+    var API_KEY = 'AIzaSyDBGYpmd824w5sXtyCIfWDXvm5rxutxRzY';
+
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="stylesheet" href="//cdn.webix.com/edge/skins/flat.min.css" type="text/css">
@@ -73,12 +74,34 @@
     const ui_menu_logic = {
       init: function () {
         $$("group_name").setValue(COMMON_JSON.group_name);
+        // google drive
+        // webix.ajax().get("https://www.googleapis.com/drive/v3/files", {//TODO google driveはユーザ指定の共有が必要。FTPのようにはいかない。
+        //   key: "AIzaSyDBGYpmd824w5sXtyCIfWDXvm5rxutxRzY",
+        //   supportsAllDrives: true,
+        //   includeItemsFromAllDrives: true,
+        //   corpora: "drive",
+        //   driveId: "1OaIqX5pyOavCMbMPE8OJCyOOdgHpr5Rl"
+        // }).then(function (data) {
+        //   var _r = data.json();
+        //   console.log(r);
+        // });
+        webix.ajax().get("https://www.googleapis.com/drive/v3/files/1JrIufMm4I9RS_29DHsK1Whc8gyF3gmLYFFg5jIycvlE", {//TODO google driveはユーザ指定の共有が必要。FTPのようにはいかない。
+          key: "AIzaSyDBGYpmd824w5sXtyCIfWDXvm5rxutxRzY"
+        }).then(function (data) {
+          var _r = data.json();
+          console.log(r);
+        });
+        //GET https://www.googleapis.com/drive/v3/files/fileId
+        // filegetならいける。フォルダ配下の取得ができない。
+        // https://docs.google.com/document/d/1JrIufMm4I9RS_29DHsK1Whc8gyF3gmLYFFg5jIycvlE/edit?usp=sharing
+        // TODO GoogleSpredSheetのWebAPI機能を使用して、JSONファイルを配布する
       },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
         switch (id) {
           case "kairan":
-            ui_menu_logic.newTabOpen(COMMON_JSON.kairanban_dir);
+            // ui_menu_logic.newTabOpen("https://docs.google.com/document/d/1JrIufMm4I9RS_29DHsK1Whc8gyF3gmLYFFg5jIycvlE");
+            $$("ui_files").show();
             break;
           case "event":
             ui_menu_logic.newTabOpen(COMMON_JSON.calendar_url);
@@ -225,6 +248,43 @@
       ]
     };
     //window設定
+    //googleDriveファイル一覧
+    const ui_files = {
+      view: "window", id: "ui_files", head: "ファイル一覧", close: true, fullscreen: true, modal: true,
+      body: {
+        rows: [
+          {
+            view: "list", id: "ui_files_list", template: "#id#. #name# <div style='padding-left:18px'> Link:#fileId# </div>",
+            type: {
+              height: 60
+            },
+            select: true,
+            autowidth: true,
+            on: {
+              onItemClick: function (id, e, node) {
+                var _item = this.getItem(id);
+                if (!_item.fileId) {
+                  return;
+                }
+                ui_menu_logic.newTabOpen(_item.fileId);
+              }
+            }
+          },
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
+        ]
+      },
+      on: {
+        onShow: function () {
+          webix.ajax().get("https://script.googleusercontent.com/macros/echo?user_content_key=-qxiKnNUxcsVV-lJlte2wfG6zu1BwHca_JrTGLH93Xl8xpb6Kkqk0XMuLIUMgQX6qml5VDS-dJOdVDej0ZxCVbdaPwVg2CyQm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMUQ7ov0c9_QaxMxdiYh1f5ovNIe6p_l7xIfyzye6l53nYS6yckWhwZQu7Bv_-JRwfMAlHnbopjvqEFsubXM3prFOZSui_yKNtz9Jw9Md8uu&lib=MKtEuNO4MHrF8TNbmjpTuldEdJsGIUS_Z").then(function (data) {
+            var _json = data.json();
+            $$("ui_files_list").parse(_json)
+          });
+        },
+        onHide: function () {
+        }
+      }
+    };
+    //window設定
     //windowお知らせ（markdownビューア）
     const ui_oshirase = {
       view: "window", id: "ui_oshirase", head: "お知らせ", close: true, fullscreen: true, modal: true,
@@ -284,7 +344,7 @@
     import QrScanner from "./libs/qr-scanner/qr-scanner.min.js";
     var qrScanner = null;
     const ui_qrcode = {
-      view: "window", id: "ui_qrcode", head: "qrcode", close: true, fullscreen: true, modal: true, CB: null,
+      view: "window", id: "ui_qrcode", head: "QRコードリーダー", close: true, fullscreen: true, modal: true, CB: null,
       body: {
         rows: [
           { view: "video", id: "qr-video", controls: false },
@@ -312,7 +372,7 @@
       //初期処理
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
-      //設定ファイル取得
+      //設定ファイル取得 TODO googleDrive
       webix.ajax("./json/config.json").then(function (data) {
         COMMON_JSON = data.json();
       }).then(function () {
@@ -320,6 +380,7 @@
         webix.ui(ui_qrcode);
         webix.ui(ui_oshirase);
         webix.ui(ui_systemsetting);
+        webix.ui(ui_files);
         //メイン画面
         webix.ui(ui_menu);
         ui_menu_logic.init();
