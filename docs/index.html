@@ -108,6 +108,15 @@
       },
       newTabOpen: function (_url) {
         window.open(_url);
+      },
+      gdrive2url: function (gdurl) {
+        let _url = new URL(gdurl);
+        let _p = _url.pathname.split("/");
+        let _vid = "";
+        _p.forEach(element => {
+          _vid = (_vid.length > element.length) ? _vid : element;
+        });
+        return "{0}/uc?id={1}".format([_url.origin, _vid]);
       }
     };
     //メイン画面レイアウト
@@ -239,11 +248,11 @@
             autowidth: true,
             on: {
               onItemClick: function (id, e, node) {
-                var _item = this.getItem(id);
+                let _item = this.getItem(id);
                 if (!_item.fileId) {
                   return;
                 }
-                ui_menu_logic.newTabOpen(_item.fileId);
+                ui_menu_logic.newTabOpen(ui_menu_logic.gdrive2url(_item.fileId));
               }
             }
           },
@@ -252,9 +261,9 @@
       },
       on: {
         onShow: function () {
-          var _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
+          let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
           webix.ajax().get(_url).then(function (data) {
-            var _json = data.json();
+            let _json = data.json();
             $$("ui_files_list").parse(_json)
           });
         },
