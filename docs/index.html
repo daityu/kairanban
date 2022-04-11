@@ -67,7 +67,7 @@
       { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
       // { id: "qrcode", value: "QRコード", color: "#5f6c7b", icon: "mdi-qrcode-scan", width: 1, height: 2, x: 4, y: 3 },
       { id: "oshirase", value: "お知らせ", color: "#ff8906", icon: "mdi-information", width: 2, height: 2, x: 1, y: 5 },
-      { id: "moushikomi", value: "参加申込", color: "#ff8906", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 5 },
+      { id: "moushikomi", value: "各種申込", color: "#ff8906", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 5 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
@@ -89,14 +89,6 @@
             break;
           case "bousai":
             ui_menu_logic.newTabOpen(ui_menu_logic.gform2url(COMMON_JSON.config.anpi_url));
-            // let url = new URL(COMMON_JSON.config.anpi_url);
-            // let params = url.searchParams;
-            // let _ls = webix.storage.local.get("ui_setting_form") || {};
-            // let _np = [];
-            // params.forEach(function (value, key) {
-            //   _np.push(key + "=" + encodeURI(_ls[value] || ""));
-            // });
-            // ui_menu_logic.newTabOpen(url.origin + url.pathname + "?" + _np.join("&"));
             break;
           case "moushikomi":
             $$("ui_files").define("kubun", "moushikomi");
