@@ -126,6 +126,7 @@
     };
     //メイン画面レイアウト
     const ui_menu = {
+      id: "app",
       rows: [
         {
           view: "toolbar", cols: [
@@ -366,6 +367,12 @@
       //初期処理
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
+      //メイン画面
+      webix.ui(ui_menu);
+      webix.extend($$("app"), webix.ProgressBar);
+      $$("app").showProgress({
+        type: "top"
+      });
       //設定ファイル取得
       let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
       webix.ajax().get(_url).then(function (data) {
@@ -376,9 +383,9 @@
         webix.ui(ui_oshirase);
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
-        //メイン画面
-        webix.ui(ui_menu);
         ui_menu_logic.init();
+      }).finally(function () {
+        $$("app").hideProgress();
       });
     });
   </script>
