@@ -65,13 +65,17 @@
       { id: "event", value: "カレンダー", color: "#3da9fc", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
       { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
       { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
-      // { id: "qrcode", value: "QRコード", color: "#5f6c7b", icon: "mdi-qrcode-scan", width: 1, height: 2, x: 4, y: 3 },
       { id: "oshirase", value: "お知らせ", color: "#ff8906", icon: "mdi-information", width: 2, height: 2, x: 1, y: 5 },
       { id: "moushikomi", value: "各種申込", color: "#ff8906", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 5 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
       init: function () {
+        //サブ画面定義
+        webix.ui(ui_qrcode);
+        webix.ui(ui_oshirase);
+        webix.ui(ui_systemsetting);
+        webix.ui(ui_files);
         $$("group_name").setValue(COMMON_JSON.config.group_name);
       },
       menuBtnClick: function (id) {
@@ -122,6 +126,10 @@
           _np.push(key + "=" + encodeURI(_ls[value] || ""));
         });
         return url.origin + url.pathname + "?" + _np.join("&");
+      },
+      getDiffMinute: function (from) {
+        console.log("from=", from);
+        return new Date(from);
       }
     };
     //メイン画面レイアウト
@@ -242,7 +250,7 @@
     //window設定
     //googleDriveファイル一覧
     const ui_files = {
-      view: "window", id: "ui_files", head: "ファイル一覧", close: true, fullscreen: true, modal: true, kubun: "kairanban",
+      view: "window", id: "ui_files", head: "ファイル一覧", css: "stripe", close: true, fullscreen: true, modal: true, kubun: "kairanban",
       body: {
         rows: [
           {
@@ -307,8 +315,7 @@
         rows: [
           {
             view: "form", id: "ui_systemsetting_form", elements: [
-              { view: "text", label: "API_KEY", name: "API_KEY", labelWidth: 120, readonly: true },
-              { view: "text", label: "CLIENT_ID", name: "CLIENT_ID", labelWidth: 120, readonly: true },
+              { view: "text", label: "API_KEY", name: "API_KEY", value: API_KEY, labelWidth: 120, readonly: true },
               {
                 view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", on: {
                   onItemClick: function () {
@@ -370,19 +377,21 @@
       //メイン画面
       webix.ui(ui_menu);
       webix.extend($$("app"), webix.ProgressBar);
+      //初回のみアクセス。再度取得する場合は、一度アプリを終了してください
+      COMMON_JSON = webix.storage.session.get("COMMON_JSON") || {};
+      if (COMMON_JSON.config) {
+        ui_menu_logic.init();
+        return;
+      }
+      //設定ファイル取得
       $$("app").showProgress({
         type: "top"
       });
-      //設定ファイル取得
       let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
       webix.ajax().get(_url).then(function (data) {
         COMMON_JSON = data.json();
+        webix.storage.session.put("COMMON_JSON", COMMON_JSON);
       }).then(function () {
-        //サブ画面定義
-        webix.ui(ui_qrcode);
-        webix.ui(ui_oshirase);
-        webix.ui(ui_systemsetting);
-        webix.ui(ui_files);
         ui_menu_logic.init();
       }).finally(function () {
         $$("app").hideProgress();
