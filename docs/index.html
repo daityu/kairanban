@@ -56,8 +56,6 @@
 
 <body>
   <script type="module">
-    //設定ファイル
-    var COMMON_JSON = {};
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
@@ -315,7 +313,7 @@
         rows: [
           {
             view: "form", id: "ui_systemsetting_form", elements: [
-              { view: "text", label: "API_KEY", name: "API_KEY", value: API_KEY, labelWidth: 120, readonly: true },
+              { view: "textarea", label: "API_KEY", name: "API_KEY", value: API_KEY, labelWidth: 70, readonly: true, height: 80 },
               {
                 view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", on: {
                   onItemClick: function () {
@@ -369,6 +367,8 @@
         }
       }
     };
+    //設定ファイル
+    var COMMON_JSON = {};
     //メイン
     webix.ready(function () {
       //初期処理
