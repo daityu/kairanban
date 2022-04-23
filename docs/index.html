@@ -59,12 +59,12 @@
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
-      { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 1 },
+      { id: "oshirase", value: "お知らせ", color: "#ff8906", badge:"new", icon: "mdi-information", width: 2, height: 2, x: 1, y: 1 },
+      { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 3 },
       { id: "event", value: "カレンダー", color: "#3da9fc", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
-      { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
-      { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
-      { id: "oshirase", value: "お知らせ", color: "#ff8906", icon: "mdi-information", width: 2, height: 2, x: 1, y: 5 },
-      { id: "moushikomi", value: "各種申込", color: "#ff8906", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 5 },
+      // { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
+      // { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
+      { id: "moushikomi", value: "各種申込", color: "#ff8906", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 3 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
@@ -75,6 +75,7 @@
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
         $$("group_name").setValue(COMMON_JSON.config.group_name);
+        // ui_menu_logic.menuBtnClick("oshirase");
       },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
@@ -167,7 +168,7 @@
         {
           cells: [
             {
-              view: "winmenu", id: "winmenu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto",
+              view: "winmenu", id: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto",
               on: { onItemClick: ui_menu_logic.menuBtnClick }
             },
             {
