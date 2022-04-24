@@ -13,9 +13,6 @@
   <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-touch-fullscreen" content="yes">
-  <!-- CODELAB: Add link rel manifest -->
-  <link rel="manifest" href="./manifest.json">
-  <!-- CODELAB: Add iOS meta tags and icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="電子回覧板">
@@ -40,14 +37,6 @@
           });
       });
     }
-    // 初回アクセス時、APIキーを保存する
-    var API_KEY = "";
-    var _u = new URL(location.href);
-    _u.searchParams.forEach(function (value, key) {
-      if (key == "API_KEY") {
-        API_KEY = value;
-      }
-    });
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <script src="./libs/Common.js"></script>
@@ -58,11 +47,83 @@
   <script src="//cdn.webix.com/edge/webix.min.js" type="text/javascript"></script>
   <script src="./libs/winmenu/winmenu.js" type="text/javascript"></script>
   <script src="//cdn.jsdelivr.net/npm/marked/marked.min.js" type="text/javascript"></script>
-  <title>menu</title>
+  <title>回覧板</title>
+  <link rel="manifest" id="my-manifest-placeholder">
 </head>
 
 <body>
   <script type="module">
+    var myDynamicManifest = {
+      "name": "電子回覧板",
+      "short_name": "回覧板",
+      "theme_color": "#2196f3",
+      "background_color": "#2196f3",
+      "display": "standalone",
+      "Scope": "./",
+      "start_url": location.href,
+      "orientation": "any",
+      "icons": [
+        {
+          "src": "images/android-chrome-36x36.png",
+          "sizes": "36x36",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-48x48.png",
+          "sizes": "48x48",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-72x72.png",
+          "sizes": "72x72",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-128x128.png",
+          "sizes": "128x128",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-144x144.png",
+          "sizes": "144x144",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-152x152.png",
+          "sizes": "152x152",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-256x256.png",
+          "sizes": "256x256",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-384x384.png",
+          "sizes": "384x384",
+          "type": "image/png"
+        },
+        {
+          "src": "images/android-chrome-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    };
+    const stringManifest = JSON.stringify(myDynamicManifest);
+    const blob = new Blob([stringManifest], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(blob);
+    document.querySelector('#my-manifest-placeholder').setAttribute('href', manifestURL);
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
@@ -165,7 +226,7 @@
                     }
                   },
                   submenu: [
-                    { icon: "mdi mdi-cog", value: "システム設定", id: "systemsetting" },
+                    // { icon: "mdi mdi-cog", value: "システム設定", id: "systemsetting" },
                     { icon: "mdi mdi-close", value: "キャンセル", id: "close" }
                   ]
                 }
@@ -339,6 +400,7 @@
                         webix.storage.local.put("API_KEY", _api_key);
                       }
                       $$("ui_qrcode").hide();
+                      $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
                     });
                     $$("ui_qrcode").show();
                   }
@@ -386,6 +448,7 @@
       }
     };
     //設定ファイル
+    var API_KEY = "";
     var COMMON_JSON = {};
     //メイン
     webix.ready(function () {
@@ -401,7 +464,14 @@
         ui_menu_logic.init();
         return;
       }
-      API_KEY = API_KEY || webix.storage.local.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg"; //EACサンプル
+      // URLからAPIキーを取得する
+      var _u = new URL(location.href);
+      _u.searchParams.forEach(function (value, key) {
+        if (key == "API_KEY") {
+          API_KEY = value;
+        }
+      });
+      API_KEY = API_KEY || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg"; //EACサンプル
       //設定ファイル取得
       $$("app").showProgress({
         type: "top"
@@ -410,11 +480,9 @@
       webix.ajax().get(_url).then(function (data) {
         COMMON_JSON = data.json();
         webix.storage.session.put("COMMON_JSON", COMMON_JSON);
-        webix.storage.local.put("API_KEY", API_KEY);
       }).then(function () {
         ui_menu_logic.init();
       }).fail(function (err) {
-        console.log(err);
         webix.message({ type: "error", text: "API_KEYが間違っています" });
       }).finally(function () {
         $$("app").hideProgress();
