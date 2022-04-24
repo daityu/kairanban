@@ -40,6 +40,14 @@
           });
       });
     }
+    // 初回アクセス時、APIキーを保存する
+    var API_KEY = "";
+    var _u = new URL(location.href);
+    _u.searchParams.forEach(function (value, key) {
+      if (key == "API_KEY") {
+        API_KEY = value;
+      }
+    });
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <script src="./libs/Common.js"></script>
@@ -314,15 +322,23 @@
         rows: [
           {
             view: "form", id: "ui_systemsetting_form", elements: [
-              { view: "textarea", label: "API_KEY", name: "API_KEY", value: API_KEY, labelWidth: 70, readonly: true, height: 80 },
+              { view: "textarea", label: "API_KEY", name: "API_KEY", value: "", labelWidth: 70, readonly: true, height: 80 },
               {
                 view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", on: {
                   onItemClick: function () {
                     $$("ui_qrcode").define("CB", function (m) {
-                      webix.message(m);
-                      $$("ui_systemsetting_form").setValues({ API_KEY: m }, true);
-                      $$("ui_qrcode").hide();
+                      var _u = new URL(m);
+                      var _api_key
+                      _u.searchParams.forEach(function (value, key) {
+                        if (key == "API_KEY") {
+                          _api_key = value;
+                        }
+                      });
                       //TODO LS保存
+                      if (_api_key) {
+                        webix.storage.local.put("API_KEY", _api_key);
+                      }
+                      $$("ui_qrcode").hide();
                     });
                     $$("ui_qrcode").show();
                   }
@@ -336,6 +352,7 @@
       },
       on: {
         onShow: function () {
+          $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
         },
         onHide: function () {
         }
@@ -369,18 +386,9 @@
       }
     };
     //設定ファイル
-    var API_KEY = "";
     var COMMON_JSON = {};
     //メイン
     webix.ready(function () {
-      // 初回アクセス時、APIキーを保存する
-      let _u = new URL(location.href);
-      _u.searchParams.forEach(function (value, key) {
-        if (key == "API_KEY") {
-          webix.storage.local.put("API_KEY", value);
-        }
-      });
-      API_KEY = webix.storage.local.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//デモ用
       //初期処理
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
@@ -393,6 +401,7 @@
         ui_menu_logic.init();
         return;
       }
+      API_KEY = API_KEY || webix.storage.local.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg"; //EACサンプル
       //設定ファイル取得
       $$("app").showProgress({
         type: "top"
@@ -401,6 +410,7 @@
       webix.ajax().get(_url).then(function (data) {
         COMMON_JSON = data.json();
         webix.storage.session.put("COMMON_JSON", COMMON_JSON);
+        webix.storage.local.put("API_KEY", API_KEY);
       }).then(function () {
         ui_menu_logic.init();
       }).fail(function (err) {
