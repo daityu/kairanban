@@ -40,7 +40,6 @@
           });
       });
     }
-    var API_KEY = "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <script src="./libs/Common.js"></script>
@@ -59,12 +58,12 @@
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
-      { id: "oshirase", value: "お知らせ", color: "#ff8906", badge:"new", icon: "mdi-information", width: 2, height: 2, x: 1, y: 1 },
+      { id: "oshirase", value: "お知らせ", color: "#55ACEE", badge: "new", icon: "mdi-information", width: 2, height: 2, x: 1, y: 1 },
       { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 3 },
-      { id: "event", value: "カレンダー", color: "#3da9fc", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
+      { id: "event", value: "カレンダー", color: "#DD4B39", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
       // { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
       // { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
-      { id: "moushikomi", value: "各種申込", color: "#ff8906", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 3 },
+      { id: "moushikomi", value: "各種申込", color: "#00C300", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 3 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
@@ -107,6 +106,11 @@
       newTabOpen: function (_url) {
         window.open(_url);
       },
+      gdriveOpen: function (_url) {
+        window.open(_url);
+        // window.location = _url;
+        // window.open(_url, "_system", "location=yes,enableViewportScale=yes,hidden=no");
+      },
       gdrive2url: function (gdurl) {
         let _url = new URL(gdurl);
         let _p = _url.pathname.split("/");
@@ -122,13 +126,9 @@
         let _ls = webix.storage.local.get("ui_setting_form") || {};
         let _np = [];
         params.forEach(function (value, key) {
-          _np.push(key + "=" + encodeURI(_ls[value] || ""));
+          _np.push(key + "=" + (_ls[value] || ""));
         });
-        return url.origin + url.pathname + "?" + _np.join("&");
-      },
-      getDiffMinute: function (from) {
-        console.log("from=", from);
-        return new Date(from);
+        return encodeURI(url.origin + url.pathname + "?" + _np.join("&"));
       }
     };
     //メイン画面レイアウト
@@ -266,7 +266,7 @@
                   return;
                 }
                 if (this.getTopParentView().config.kubun == "kairanban") {//googledriveを参照
-                  ui_menu_logic.newTabOpen(ui_menu_logic.gdrive2url(_item.fileId));
+                  ui_menu_logic.gdriveOpen(_item.fileId);
                 } else {//googleformを参照
                   ui_menu_logic.newTabOpen(ui_menu_logic.gform2url(_item.fileId));
                 }
@@ -369,9 +369,18 @@
       }
     };
     //設定ファイル
+    var API_KEY = "";
     var COMMON_JSON = {};
     //メイン
     webix.ready(function () {
+      // 初回アクセス時、APIキーを保存する
+      let _u = new URL(location.href);
+      _u.searchParams.forEach(function (value, key) {
+        if (key == "API_KEY") {
+          webix.storage.local.put("API_KEY", value);
+        }
+      });
+      API_KEY = webix.storage.local.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//デモ用
       //初期処理
       webix.ui.fullScreen();
       webix.i18n.setLocale("ja-JP");
@@ -394,6 +403,9 @@
         webix.storage.session.put("COMMON_JSON", COMMON_JSON);
       }).then(function () {
         ui_menu_logic.init();
+      }).fail(function (err) {
+        console.log(err);
+        webix.message({ type: "error", text: "API_KEYが間違っています" });
       }).finally(function () {
         $$("app").hideProgress();
       });
