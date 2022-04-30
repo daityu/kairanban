@@ -26,6 +26,53 @@
     .webix_cal_month_name {
       font-size: 14pt !important;
     }
+
+    /*読取専用INPUT*/
+    input[readonly],
+    textarea[readonly],
+    select[readonly],
+    .webix_inp_static[aria-readonly] {
+      background-color: lightyellow !important;
+    }
+
+    .fusen_bl {
+      /*ブルー*/
+      text-decoration: none;
+      background: #f7f7f7;
+      border-left: solid 4px blue;
+      /*左線*/
+      color: blue;
+      /*文字色*/
+      font-weight: bold;
+      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+      padding: 2px;
+    }
+
+    .fusen_rd {
+      /*レッド*/
+      text-decoration: none;
+      background: #f7f7f7;
+      border-left: solid 4px red;
+      /*左線*/
+      color: red;
+      /*文字色*/
+      font-weight: bold;
+      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+      padding: 2px;
+    }
+
+    .fusen_gn {
+      /*緑*/
+      text-decoration: none;
+      background: #f7f7f7;
+      border-left: solid 4px green;
+      /*左線*/
+      color: green;
+      /*文字色*/
+      font-weight: bold;
+      box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+      padding: 2px;
+    }
   </style>
   <script type="text/javascript">
     // CODELAB: Register service worker.
@@ -176,7 +223,7 @@
                     }
                   },
                   submenu: [
-                    // { icon: "mdi mdi-cog", value: "システム設定", id: "systemsetting" },
+                    { icon: "mdi mdi-cog", value: "システム設定", id: "systemsetting" },
                     { icon: "mdi mdi-close", value: "キャンセル", id: "close" }
                   ]
                 }
@@ -272,7 +319,8 @@
       body: {
         rows: [
           {
-            view: "list", id: "ui_files_list", template: "#id#. #name# <div style='padding-left:18px'> Link:#fileId# </div>",
+            // view: "list", id: "ui_files_list", template: "#id#. #name# <div style='padding-left:18px'> Link:#fileId# </div>",
+            view: "list", id: "ui_files_list", template: "<div class='fusen_bl' style='font-size:28px;  height:50px;'>#name#</div>",
             type: {
               height: 60
             },
@@ -338,19 +386,20 @@
                 view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", on: {
                   onItemClick: function () {
                     $$("ui_qrcode").define("CB", function (m) {
-                      var _u = new URL(m);
-                      var _api_key
-                      _u.searchParams.forEach(function (value, key) {
-                        if (key == "API_KEY") {
-                          _api_key = value;
-                        }
-                      });
-                      //TODO LS保存
-                      if (_api_key) {
-                        webix.storage.local.put("API_KEY", _api_key);
-                      }
+                      // var _u = new URL(m);
+                      // var _api_key
+                      // _u.searchParams.forEach(function (value, key) {
+                      //   if (key == "API_KEY") {
+                      //     _api_key = value;
+                      //   }
+                      // });
+                      // //TODO LS保存
+                      // if (_api_key) {
+                      //   webix.storage.local.put("API_KEY", _api_key);
+                      // }
+                      $$("ui_systemsetting_form").setValues({ API_KEY: m }, true);
                       $$("ui_qrcode").hide();
-                      $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
+                      // $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
                     });
                     $$("ui_qrcode").show();
                   }
@@ -364,7 +413,8 @@
       },
       on: {
         onShow: function () {
-          $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
+          // $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
+          $$("ui_systemsetting_form").setValues({ API_KEY: API_KEY }, true);
         },
         onHide: function () {
         }
