@@ -20,11 +20,14 @@
   <!-- CODELAB: Add meta theme-color -->
   <meta name="theme-color" content="#2F3BA2" />
   <style>
-    .webix_el_box,
+    /*全体の文字の大きさ*/
+    .webix_el_box label,
+    .webix_el_box input,
     .webix_cal_body .webix_cal_day_inner,
     .webix_cal_body .webix_cal_block,
-    .webix_cal_month_name {
-      font-size: 14pt !important;
+    .webix_cal_month_name,
+    .webix_template {
+      font-size: 1.2em !important;
     }
 
     /*読取専用INPUT*/
@@ -238,9 +241,9 @@
               on: { onItemClick: ui_menu_logic.menuBtnClick }
             },
             {
-              view: "form", id: "ui_setting_form",
+              view: "form", id: "ui_setting_form", padding: 3,
               elements: [
-                { template: "イベント申込みや安否確認時に必要になる項目を、あらかじめ入力することができます。", height: 60, borderless: true },
+                { template: "イベント申込みや安否確認時に必要になる項目を、あらかじめ入力することができます。", autoheight: true, borderless: true },
                 { view: "text", name: "name", label: "お名前" },
                 { view: "text", name: "email", label: "メール", type: "email", placeholder: "name@example.com" },
                 {
@@ -319,8 +322,13 @@
       body: {
         rows: [
           {
-            // view: "list", id: "ui_files_list", template: "#id#. #name# <div style='padding-left:18px'> Link:#fileId# </div>",
-            view: "list", id: "ui_files_list", template: "<div class='fusen_bl' style='font-size:28px;  height:50px;'>#name#</div>",
+            view: "list", id: "ui_files_list", template: function (obj) {
+              if ($$("ui_files").config.kubun == "kairanban") {
+                return "<div class='fusen_bl' style='font-size:28px;  height:50px;'>{0}</div>".format([obj.name]);
+              } else {
+                return "<div class='fusen_gn' style='font-size:28px;  height:50px;'>{0}</div>".format([obj.name]);
+              }
+            },
             type: {
               height: 60
             },
@@ -332,7 +340,7 @@
                 if (!_item.fileId) {
                   return;
                 }
-                if (this.getTopParentView().config.kubun == "kairanban") {//googledriveを参照
+                if ($$("ui_files").config.kubun == "kairanban") {//googledriveを参照
                   ui_menu_logic.gdriveOpen(_item.fileId);
                 } else {//googleformを参照
                   ui_menu_logic.newTabOpen(ui_menu_logic.gform2url(_item.fileId));
@@ -345,9 +353,10 @@
       },
       on: {
         onShow: function () {
-          let _kubun = this.getTopParentView().config.kubun;
+          let _kubun = $$("ui_files").config.kubun;
           let _data = webix.copy(COMMON_JSON[_kubun]);
           $$("ui_files_list").parse(_data);
+          $$("ui_files_list").unselectAll();
         },
         onHide: function () {
         }
