@@ -143,6 +143,12 @@
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
         $$("group_name").setValue(COMMON_JSON.config.group_name);
+        if (!COMMON_JSON.news) return;
+        let _n = [];
+        COMMON_JSON.news.forEach(function (value, key) {
+          _n += value.name + "\n";
+        });
+        $$("winmenu_news").setHTML(marked.parse(_n));
         // ui_menu_logic.menuBtnClick("oshirase");
       },
       menuBtnClick: function (id) {
@@ -237,8 +243,13 @@
         {
           cells: [
             {
-              view: "winmenu", id: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto",
-              on: { onItemClick: ui_menu_logic.menuBtnClick }
+              id: "winmenu", rows: [
+                { view: "template", id: "winmenu_news", scroll: "auto", gravity: 0.4 },
+                {
+                  view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto",
+                  on: { onItemClick: ui_menu_logic.menuBtnClick }
+                }
+              ]
             },
             {
               view: "form", id: "ui_setting_form", padding: 3,
@@ -355,6 +366,7 @@
         onShow: function () {
           let _kubun = $$("ui_files").config.kubun;
           let _data = webix.copy(COMMON_JSON[_kubun]);
+          $$("ui_files_list").clearAll();
           $$("ui_files_list").parse(_data);
           $$("ui_files_list").unselectAll();
         },
@@ -469,10 +481,10 @@
       webix.extend($$("app"), webix.ProgressBar);
       //初回のみアクセス。再度取得する場合は、一度アプリを終了してください
       COMMON_JSON = webix.storage.session.get("COMMON_JSON") || {};
-      if (COMMON_JSON.config) {
-        ui_menu_logic.init();
-        return;
-      }
+      // if (COMMON_JSON.config) {
+      //   ui_menu_logic.init();
+      //   return;
+      // }
       // URLからAPIキーを取得する
       var _u = new URL(location.href);
       _u.searchParams.forEach(function (value, key) {
@@ -492,7 +504,8 @@
       }).then(function () {
         ui_menu_logic.init();
       }).fail(function (err) {
-        webix.message({ type: "error", text: "API_KEYが間違っています" });
+        // TODO GASでは同じIDの関数を作成すると、リダイレクトされてしまう
+        // webix.message({ type: "error", text: "API_KEYが間違っています" });
       }).finally(function () {
         $$("app").hideProgress();
       });
