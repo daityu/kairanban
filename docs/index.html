@@ -96,6 +96,7 @@
   <link rel="stylesheet" href="./libs/winmenu/winmenu.css" type="text/css">
   <script src="//cdn.webix.com/edge/webix.min.js" type="text/javascript"></script>
   <script src="./libs/winmenu/winmenu.js" type="text/javascript"></script>
+  <script src="./libs/qrcodejs/qrcode.min.js" type="text/javascript"></script>
   <script src="//cdn.jsdelivr.net/npm/marked/marked.min.js" type="text/javascript"></script>
   <title>回覧板</title>
   <link rel="manifest" id="my-manifest-placeholder">
@@ -241,9 +242,9 @@
           cells: [
             {
               id: "winmenu", rows: [
-                { view: "template", id: "winmenu_news", scroll: "auto", gravity: 0.4 },
+                { view: "template", id: "winmenu_news", scroll: "auto" },
                 {
-                  view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto",
+                  view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto", minHeight: 200,
                   on: { onItemClick: ui_menu_logic.menuBtnClick }
                 }
               ]
@@ -430,7 +431,7 @@
               }
             ]
           },
-          {},
+          { template: "<div id='qrcode'></div>" },
           { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
       },
@@ -438,6 +439,8 @@
         onShow: function () {
           // $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
           $$("ui_systemsetting_form").setValues({ API_KEY: API_KEY }, true);
+          document.getElementById("qrcode").replaceChildren();
+          new QRCode(document.getElementById("qrcode"), location.href);
         },
         onHide: function () {
         }
