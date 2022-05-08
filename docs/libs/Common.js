@@ -34,3 +34,23 @@ if (String.prototype.format == undefined) {
     return this.replace( /\{(\w+)\}/g, rep_fn );
   }
 }
+/**
+ * 連想配列連結関数
+ *  [{name:"あああ"},{name:"いいい"}].renketsu("name"); //->あああ\n\nいいい
+ */
+ if (Array.prototype.renketsu == undefined) {
+  Array.prototype.renketsu = function(arg)
+  {
+    // 置換ファンク
+    var rep_fn = undefined;
+
+    if (!arg || typeof arg == "String") {//引数がnullの場合は何もしない
+      return this;
+    }
+    let _n = "";
+    this.forEach(function (value, key) {
+      _n += value[arg] + "\n\n";
+    });
+    return _n;
+  }
+}

@@ -144,10 +144,7 @@
         webix.ui(ui_files);
         $$("group_name").setValue(COMMON_JSON.config.group_name);
         if (!COMMON_JSON.news) return;
-        let _n = [];
-        COMMON_JSON.news.forEach(function (value, key) {
-          _n += value.name + "\n";
-        });
+        let _n = COMMON_JSON.news.renketsu("name");
         $$("winmenu_news").setHTML(marked.parse(_n));
         // ui_menu_logic.menuBtnClick("oshirase");
       },
@@ -386,9 +383,14 @@
       },
       on: {
         onShow: function () {
-          webix.ajax().get("./pdf/oshirase.txt").then(function (data) {
-            $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
-          });
+          if (!COMMON_JSON.oshirase) {
+            webix.ajax().get("./pdf/oshirase.txt").then(function (data) {
+              $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
+            });
+            return;
+          };
+          let _n = COMMON_JSON.oshirase.renketsu("name");
+          $$("ui_menu_oshirase").setHTML(marked.parse(_n));
         },
         onHide: function () {
         }
