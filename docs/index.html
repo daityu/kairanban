@@ -98,15 +98,26 @@
   <script src="./libs/winmenu/winmenu.js" type="text/javascript"></script>
   <script src="./libs/qrcodejs/qrcode.min.js" type="text/javascript"></script>
   <script src="//cdn.jsdelivr.net/npm/marked/marked.min.js" type="text/javascript"></script>
-  <title>回覧板</title>
+  <title>自治会アプリ</title>
   <link rel="manifest" id="my-manifest-placeholder">
 </head>
 
 <body>
   <script type="module">
+    let _u = new URL(location.href);
+    var APP_NAME = "回覧板アプリ";
+    var API_KEY = "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
+    _u.searchParams.forEach(function (value, key) {
+      if (key == "APP_NAME") {
+        APP_NAME = value;
+      }
+      if (key == "API_KEY") {
+        API_KEY = value;
+      }
+    });
     var myDynamicManifest = {
-      "name": "電子回覧板",
-      "short_name": "回覧板",
+      "name": APP_NAME,
+      "short_name": APP_NAME,
       "theme_color": "#2196f3",
       "background_color": "#2196f3",
       "display": "standalone",
@@ -115,7 +126,17 @@
       "orientation": "any",
       "icons": [
         {
-          "src": location.origin + location.pathname + "images/android-chrome-512x512.png",
+          "src": location.origin + location.pathname + "images/180.png",
+          "sizes": "180x180",
+          "type": "image/png"
+        },
+        {
+          "src": location.origin + location.pathname + "images/192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": location.origin + location.pathname + "images/512.png",
           "sizes": "512x512",
           "type": "image/png"
         }
@@ -128,12 +149,11 @@
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
-      { id: "oshirase", value: "お知らせ", color: "#55ACEE", badge: "new", icon: "mdi-information", width: 2, height: 2, x: 1, y: 1 },
-      { id: "kairan", value: "回覧板", color: "#094067", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 3 },
-      { id: "event", value: "カレンダー", color: "#DD4B39", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
+      { id: "oshirase", value: "", color: "#283D70", icon: "mdi-information", width: 2, height: 2, x: 1, y: 1 },
+      { id: "kairan", value: "", color: "#266233", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 3 },
+      { id: "event", value: "", color: "#7E2A6C", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
       // { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
-      // { id: "following", value: "生活便利帳", color: "#5f6c7b", icon: "mdi-share", width: 2, height: 2, x: 3, y: 3 },
-      { id: "moushikomi", value: "各種申込", color: "#00C300", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 3 },
+      { id: "moushikomi", value: "", color: "#8D712B", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 3 },
     ];
     //メイン画面ロジック部
     const ui_menu_logic = {
@@ -143,11 +163,25 @@
         webix.ui(ui_oshirase);
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
-        $$("group_name").setValue(COMMON_JSON.config.group_name);
-        if (!COMMON_JSON.news) return;
-        let _n = COMMON_JSON.news.renketsu("name");
-        $$("winmenu_news").setHTML(marked.parse(_n));
-        // ui_menu_logic.menuBtnClick("oshirase");
+        $$("group_name").setValue(COMMON_JSON.config.group_name);//ヘッダー
+        if (COMMON_JSON.news) {//新着情報
+          let _n = COMMON_JSON.news.renketsu("name");
+          $$("winmenu_news").setHTML(marked.parse(_n));
+        }
+        //ボタン名変更
+        let _p = {
+          oshirase: COMMON_JSON.config.btn_oshirase || "お知らせ",
+          kairan: COMMON_JSON.config.btn_kairan || "回覧板",
+          event: COMMON_JSON.config.btn_calendar || "カレンダー",
+          moushikomi: COMMON_JSON.config.btn_moushikomi || "各種申込",
+        };
+        Object.keys(_p).forEach(function (key) {
+          // console.log(key);
+          let _a = $$("winmenu_menu").getItem(key);
+          _a.value = _p[key];
+        });
+        // TODO badge
+        $$("winmenu_menu").refresh();
       },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
@@ -158,9 +192,6 @@
             break;
           case "event":
             ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
-            break;
-          case "following":
-            ui_menu_logic.newTabOpen(COMMON_JSON.config.benri_dir);
             break;
           case "bousai":
             ui_menu_logic.newTabOpen(ui_menu_logic.gform2url(COMMON_JSON.config.anpi_url));
@@ -244,7 +275,7 @@
               id: "winmenu", rows: [
                 { view: "template", id: "winmenu_news", scroll: "auto" },
                 {
-                  view: "winmenu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto", minHeight: 200,
+                  view: "winmenu", id: "winmenu_menu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto", minHeight: 200,
                   on: { onItemClick: ui_menu_logic.menuBtnClick }
                 }
               ]
@@ -405,9 +436,9 @@
         rows: [
           {
             view: "form", id: "ui_systemsetting_form", elements: [
-              { view: "textarea", label: "API_KEY", name: "API_KEY", value: "", labelWidth: 70, readonly: true, height: 80 },
+              { view: "textarea", label: "API_KEY", name: "API_KEY", value: "", labelWidth: 75, readonly: true, height: 80 },
               {
-                view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", on: {
+                view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", hidden: true, on: {
                   onItemClick: function () {
                     $$("ui_qrcode").define("CB", function (m) {
                       // var _u = new URL(m);
@@ -431,6 +462,7 @@
               }
             ]
           },
+          { view: "label", label: "このアプリのQRコード" },
           { template: "<div id='qrcode'></div>" },
           { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
@@ -474,7 +506,6 @@
       }
     };
     //設定ファイル
-    var API_KEY = "";
     var COMMON_JSON = {};
     //メイン
     webix.ready(function () {
@@ -491,13 +522,13 @@
       //   return;
       // }
       // URLからAPIキーを取得する
-      var _u = new URL(location.href);
-      _u.searchParams.forEach(function (value, key) {
-        if (key == "API_KEY") {
-          API_KEY = value;
-        }
-      });
-      API_KEY = API_KEY || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg"; //EACサンプル
+      // var _u = new URL(location.href);
+      // _u.searchParams.forEach(function (value, key) {
+      //   if (key == "API_KEY") {
+      //     API_KEY = value;
+      //   }
+      // });
+      // API_KEY = API_KEY || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg"; //EACサンプル
       //設定ファイル取得
       $$("app").showProgress({
         type: "top"
