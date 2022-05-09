@@ -105,9 +105,8 @@
 <body>
   <script type="module">
     let _url = new URL(location.href);
-    let _searchParams = _url.searchParams;
-    var APP_NAME = _searchParams.get("APP_NAME") || "回覧板アプリ";
-    var API_KEY = _searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
+    var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
+    var API_KEY = _url.searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
     var myDynamicManifest = {
       "name": APP_NAME,
       "short_name": APP_NAME,
