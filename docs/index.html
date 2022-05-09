@@ -104,17 +104,10 @@
 
 <body>
   <script type="module">
-    let _u = new URL(location.href);
-    var APP_NAME = "回覧板アプリ";
-    var API_KEY = "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
-    _u.searchParams.forEach(function (value, key) {
-      if (key == "APP_NAME") {
-        APP_NAME = value;
-      }
-      if (key == "API_KEY") {
-        API_KEY = value;
-      }
-    });
+    let _url = new URL(location.href);
+    let _searchParams = _url.searchParams;
+    var APP_NAME = _searchParams.get("APP_NAME") || "回覧板アプリ";
+    var API_KEY = _searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
     var myDynamicManifest = {
       "name": APP_NAME,
       "short_name": APP_NAME,
@@ -142,6 +135,7 @@
         }
       ]
     };
+    // console.log(myDynamicManifest);
     const stringManifest = JSON.stringify(myDynamicManifest);
     const blob = new Blob([stringManifest], { type: 'application/json' });
     const manifestURL = URL.createObjectURL(blob);
