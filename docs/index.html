@@ -16,7 +16,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="電子回覧板">
-  <link rel="apple-touch-icon" href="./images/android-chrome-152x152.png">
+  <!-- <link rel="apple-touch-icon" href="./images/android-chrome-152x152.png"> -->
   <!-- CODELAB: Add meta theme-color -->
   <meta name="theme-color" content="#2F3BA2" />
   <style>
@@ -172,8 +172,8 @@
           // console.log(key);
           let _a = $$("winmenu_menu").getItem(key);
           _a.value = _p[key];
+          // TODO badge
         });
-        // TODO badge
         $$("winmenu_menu").refresh();
       },
       menuBtnClick: function (id) {
@@ -235,31 +235,7 @@
         {
           view: "toolbar", cols: [
             { view: "label", id: "group_name", label: "" },
-            {
-              view: "menu", width: 40, data: [
-                {
-                  id: "2", value: "", icon: "mdi mdi-24px mdi-menu", config: {
-                    on: {
-                      onItemClick: function (id) {
-                        switch (id) {
-                          case "systemsetting":
-                            $$("ui_systemsetting").show();
-                            break;
-                          case "close":
-                            break;
-                          default:
-                            break;
-                        }
-                      }
-                    }
-                  },
-                  submenu: [
-                    { icon: "mdi mdi-cog", value: "システム設定", id: "systemsetting" },
-                    { icon: "mdi mdi-close", value: "キャンセル", id: "close" }
-                  ]
-                }
-              ]
-            }
+            { view: "icon", icon: "wxi-dots", popup: "ui_systemsetting" }
           ]
         },
         {
