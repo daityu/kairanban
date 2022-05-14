@@ -226,6 +226,9 @@
           _np.push(key + "=" + (_ls[value] || ""));
         });
         return encodeURI(url.origin + url.pathname + "?" + _np.join("&"));
+      },
+      isGFolder: function (pathname) {
+        return (pathname.indexOf("folders") > -1)
       }
     };
     //メイン画面レイアウト
@@ -333,9 +336,13 @@
           {
             view: "list", id: "ui_files_list", template: function (obj) {
               if ($$("ui_files").config.kubun == "kairanban") {
-                return "<div class='fusen_bl' style='font-size:28px;  height:50px;'>{0}</div>".format([obj.name]);
+                if (ui_menu_logic.isGFolder(obj.fileId)) {//フォルダ
+                  return "<div class='fusen_bl' style='font-size:28px;  height:50px;'><span class='webix_icon mdi mdi-48px mdi-folder'></span>　{0}</div>".format([obj.name]);
+                } else {//ファイル
+                  return "<div class='fusen_bl' style='font-size:28px;  height:50px;'><span class='webix_icon mdi mdi-48px mdi-file'></span>　{0}</div>".format([obj.name]);
+                }
               } else {
-                return "<div class='fusen_gn' style='font-size:28px;  height:50px;'>{0}</div>".format([obj.name]);
+                return "<div class='fusen_gn' style='font-size:28px;  height:50px;'><span class='webix_icon mdi mdi-48px mdi-link'></span>　{0}</div>".format([obj.name]);
               }
             },
             type: {
