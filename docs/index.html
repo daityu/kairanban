@@ -156,7 +156,7 @@
         webix.ui(ui_oshirase);
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
-        $$("group_name").setValue(COMMON_JSON.config.group_name);//ヘッダー
+        $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, COMMON_JSON.config.group_logo]));//ヘッダー
         if (COMMON_JSON.news) {//新着情報
           let _n = COMMON_JSON.news.renketsu("name");
           $$("winmenu_news").setHTML(marked.parse(_n));
@@ -335,15 +335,16 @@
         rows: [
           {
             view: "list", id: "ui_files_list", template: function (obj) {
+              //ICONセット
+              let _icon = "";
+              let _color = "bl";
               if ($$("ui_files").config.kubun == "kairanban") {
-                if (ui_menu_logic.isGFolder(obj.fileId)) {//フォルダ
-                  return "<div class='fusen_bl' style='font-size:28px;  height:50px;'><span class='webix_icon mdi mdi-48px mdi-folder'></span>　{0}</div>".format([obj.name]);
-                } else {//ファイル
-                  return "<div class='fusen_bl' style='font-size:28px;  height:50px;'><span class='webix_icon mdi mdi-48px mdi-file'></span>　{0}</div>".format([obj.name]);
-                }
+                _icon = ui_menu_logic.isGFolder(obj.fileId) ? "mdi-folder" : "mdi-file";
               } else {
-                return "<div class='fusen_gn' style='font-size:28px;  height:50px;'><span class='webix_icon mdi mdi-48px mdi-link'></span>　{0}</div>".format([obj.name]);
+                _icon = "mdi-link";
+                _color = "gn";
               }
+              return "<div class='fusen_{0}' style='font-size:28px;'><span class='webix_icon mdi mdi-48px {1}'></span><span style='vertical-align:middle'>　{2}</span></div>".format([_color,_icon,obj.name]);
             },
             type: {
               height: 60
