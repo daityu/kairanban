@@ -235,6 +235,11 @@
         } else {//リンク
           return "mdi-link";
         }
+      },
+      sha256: async function (text) {
+        const uint8 = new TextEncoder().encode(text)
+        const digest = await crypto.subtle.digest('SHA-256', uint8)
+        return Array.from(new Uint8Array(digest)).map(v => v.toString(16).padStart(2, '0')).join('')
       }
     };
     //メイン画面レイアウト
@@ -419,7 +424,7 @@
                     view: "button", css: "webix_danger", label: "保存", width: 100, on: {
                       onItemClick: function () {
                         let _p = $$("ui_systemsetting_form").getValues();
-                        webix.storage.local.put("PC_{0}".format([API_KEY]), _p.pass_code);
+                        ui_menu_logic.sha256(_p.pass_code).then(hash => webix.storage.local.put("PC_{0}".format([API_KEY]), hash))
                         webix.delay(function () {//再表示
                           location.reload();
                         });
@@ -526,8 +531,8 @@
         type: "top"
       });
       let _pc = webix.storage.local.get("PC_{0}".format([API_KEY]));
-      let _url = "https://script.google.com/macros/s/{0}/exec?{1}".format([API_KEY, _pc]);
-      webix.ajax().get(_url).then(function (data) {
+      let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY, _pc]);
+      webix.ajax().get(_url, {pc:_pc}).then(function (data) {
         COMMON_JSON = data.json();
         webix.storage.session.put("COMMON_JSON", COMMON_JSON);
       }).then(function () {
