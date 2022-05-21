@@ -227,8 +227,14 @@
         });
         return encodeURI(url.origin + url.pathname + "?" + _np.join("&"));
       },
-      isGFolder: function (pathname) {
-        return (pathname.indexOf("folders") > -1)
+      getIconName: function (pathname) {
+        if (pathname.indexOf("/folders/") > -1) {//フォルダ
+          return "mdi-folder";
+        } else if (pathname.indexOf("/file/") > -1) {//ファイル
+          return "mdi-file";
+        } else {//リンク
+          return "mdi-link";
+        }
       }
     };
     //メイン画面レイアウト
@@ -335,16 +341,9 @@
         rows: [
           {
             view: "list", id: "ui_files_list", template: function (obj) {
-              //ICONセット
-              let _icon = "";
-              let _color = "bl";
-              if ($$("ui_files").config.kubun == "kairanban") {
-                _icon = ui_menu_logic.isGFolder(obj.fileId) ? "mdi-folder" : "mdi-file";
-              } else {
-                _icon = "mdi-link";
-                _color = "gn";
-              }
-              return "<div class='fusen_{0}' style='font-size:28px;'><span class='webix_icon mdi mdi-48px {1}'></span><span style='vertical-align:middle'>　{2}</span></div>".format([_color,_icon,obj.name]);
+              let _css = ($$("ui_files").config.kubun == "kairanban") ? "fusen_bl" : "fusen_gn";
+              let _icon = ui_menu_logic.getIconName(obj.fileId);
+              return "<div class='{0}' style='font-size:28px;'><span class='webix_icon mdi mdi-48px {1}'></span><span style='vertical-align:super'>　{2}</span></div>".format([_css, _icon, obj.name]);
             },
             type: {
               height: 60
@@ -413,7 +412,23 @@
         rows: [
           {
             view: "form", id: "ui_systemsetting_form", elements: [
-              { view: "textarea", label: "API_KEY", name: "API_KEY", value: "", labelWidth: 75, readonly: true, height: 80 },
+              {
+                cols: [
+                  { view: "text", type: "password", label: "パスコード", name: "pass_code", value: "" },
+                  {
+                    view: "button", css: "webix_danger", label: "保存", width: 100, on: {
+                      onItemClick: function () {
+                        let _p = $$("ui_systemsetting_form").getValues();
+                        webix.storage.local.put("PC_{0}".format([API_KEY]), _p.pass_code);
+                        webix.delay(function () {//再表示
+                          location.reload();
+                        });
+                      }
+                    }
+                  }
+                ]
+              },
+              { view: "textarea", label: "API_KEY", name: "API_KEY", value: "", readonly: true, height: 80 },
               {
                 view: "button", css: "webix_danger", type: "icon", icon: "mdi mdi-qrcode-scan", label: "QRコードから設定する", hidden: true, on: {
                   onItemClick: function () {
@@ -437,7 +452,7 @@
                   }
                 }
               }
-            ]
+            ], elementsConfig: { labelWidth: 100 }
           },
           { view: "label", label: "このアプリのQRコード" },
           { template: "<div id='qrcode'></div>" },
@@ -510,7 +525,8 @@
       $$("app").showProgress({
         type: "top"
       });
-      let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY]);
+      let _pc = webix.storage.local.get("PC_{0}".format([API_KEY]));
+      let _url = "https://script.google.com/macros/s/{0}/exec?{1}".format([API_KEY, _pc]);
       webix.ajax().get(_url).then(function (data) {
         COMMON_JSON = data.json();
         webix.storage.session.put("COMMON_JSON", COMMON_JSON);
