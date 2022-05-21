@@ -158,7 +158,9 @@
         webix.ui(ui_files);
         $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, COMMON_JSON.config.group_logo]));//ヘッダー
         if (COMMON_JSON.news) {//新着情報
+          console.log(COMMON_JSON.news);
           let _n = COMMON_JSON.news.renketsu("name");
+          console.log(_n);
           $$("winmenu_news").setHTML(marked.parse(_n));
         }
         //ボタン名変更
@@ -532,9 +534,12 @@
       });
       let _pc = webix.storage.local.get("PC_{0}".format([API_KEY]));
       let _url = "https://script.google.com/macros/s/{0}/exec".format([API_KEY, _pc]);
-      webix.ajax().get(_url, {pc:_pc}).then(function (data) {
+      webix.ajax().get(_url, { pc: _pc }).then(function (data) {
         COMMON_JSON = data.json();
         webix.storage.session.put("COMMON_JSON", COMMON_JSON);
+        if (!COMMON_JSON.config) {
+          webix.message({ type: "error", text: "パスコードが異なります。右側の「･･･」から設定してください" });
+        }
       }).then(function () {
         ui_menu_logic.init();
       }).fail(function (err) {
