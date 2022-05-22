@@ -106,7 +106,7 @@
 <body>
   <script type="module">
     let _url = new URL(location.href);
-    console.log(_url);
+    // console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
     var API_KEY = _url.searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
     var myDynamicManifest = {
@@ -116,8 +116,9 @@
       "theme_color": "#2196f3",
       "background_color": "#2196f3",
       "display": "standalone",
-      "Scope": _url.pathname,
-      "start_url": location.href,
+      "scope": _url.pathname,
+      // "start_url": location.href,
+      "start_url": _url.pathname + _url.search,
       "orientation": "any",
       "icons": [
         {
