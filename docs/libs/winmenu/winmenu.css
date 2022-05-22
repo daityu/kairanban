@@ -34,9 +34,10 @@
 
 	padding-left:10px;
 	line-height: 25px;
-	font-size: 20px;
+	/* font-size: 20px; */
+	font-size: 5vmin !important;
 	position:absolute;
-	bottom:0;
+	bottom:1vmin;
 }
 .webix_winmenu_item .menu_icon{
 	color: #fff;

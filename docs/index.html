@@ -28,6 +28,7 @@
     .webix_cal_month_name,
     .webix_template {
       font-size: 1.2em !important;
+      /* font-size: 2vmin !important; */
     }
 
     /*読取専用INPUT*/
@@ -105,6 +106,7 @@
 <body>
   <script type="module">
     let _url = new URL(location.href);
+    console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
     var API_KEY = _url.searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
     var myDynamicManifest = {
@@ -114,7 +116,7 @@
       "theme_color": "#2196f3",
       "background_color": "#2196f3",
       "display": "standalone",
-      "Scope": "./",
+      "Scope": _url.pathname,
       "start_url": location.href,
       "orientation": "any",
       "icons": [
@@ -160,9 +162,7 @@
         webix.ui(ui_files);
         $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, COMMON_JSON.config.group_logo]));//ヘッダー
         if (COMMON_JSON.news) {//新着情報
-          console.log(COMMON_JSON.news);
           let _n = COMMON_JSON.news.renketsu("name");
-          console.log(_n);
           $$("winmenu_news").setHTML(marked.parse(_n));
         }
         //ボタン名変更
@@ -206,6 +206,7 @@
       },
       newTabOpen: function (_url) {
         window.open(_url);
+        // window.location = _url;
       },
       gdriveOpen: function (_url) {
         window.open(_url);
@@ -262,7 +263,7 @@
               id: "winmenu", rows: [
                 { view: "template", id: "winmenu_news", scroll: "auto" },
                 {
-                  view: "winmenu", id: "winmenu_menu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto", minHeight: 200,
+                  view: "winmenu", id: "winmenu_menu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto", minHeight: 160,
                   on: { onItemClick: ui_menu_logic.menuBtnClick }
                 }
               ]
