@@ -116,9 +116,8 @@
       "theme_color": "#2196f3",
       "background_color": "#2196f3",
       "display": "standalone",
-      "scope": _url.pathname,
-      // "start_url": location.href,
-      "start_url": _url.pathname + _url.search,
+      "scope": location.origin + _url.pathname,
+      "start_url": location.href,
       "orientation": "any",
       "icons": [
         {
@@ -143,6 +142,11 @@
     const blob = new Blob([stringManifest], { type: 'application/json' });
     const manifestURL = URL.createObjectURL(blob);
     document.querySelector('#my-manifest-placeholder').setAttribute('href', manifestURL);
+    // let reader = new FileReader();
+    // reader.readAsDataURL(blob);
+    // reader.onload = function(){
+    //   document.querySelector('#my-manifest-placeholder').setAttribute('href', reader.result);
+    // }
     //メイン画面
     //メイン画面メニューボタン部
     const ui_menu_data = [
