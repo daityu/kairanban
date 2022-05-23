@@ -45,7 +45,7 @@
 	height: 80px;
 	/*line-height: 80px;*/
 	text-align: center;
-	font-size: 40px;
+	font-size: 12vmin !important;
 	margin-top: 10px;
 }
 .webix_winmenu_item .bg_img{

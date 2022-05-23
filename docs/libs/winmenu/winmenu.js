@@ -77,7 +77,7 @@ webix.protoUI({
 				image = "<div class='bg_img' style='background-image:url(" + obj.img_full + ");'></div>";
 			}
 			else if (obj.icon) {
-				image = "<span class='mdi mdi-48px " + obj.icon + "'></span>";
+				image = "<span class='mdi menu_icon " + obj.icon + "'></span>";
 			}
 			else if (obj.img) {
 				image = "<img src='" + obj.img + "' align='center'>";
