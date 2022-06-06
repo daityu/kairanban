@@ -151,7 +151,7 @@
     //メイン画面メニューボタン部
     const ui_menu_data = [
       { id: "oshirase", value: "", color: "#7E2A6C", icon: "mdi-information", width: 2, height: 2, x: 1, y: 1 },
-      { id: "kairan", value: "", color: "#283D70", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 3 },
+      { id: "kairanban", value: "", color: "#283D70", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 3 },
       { id: "event", value: "", color: "#8D712B", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
       // { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
       { id: "moushikomi", value: "", color: "#266233", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 3 },
@@ -173,22 +173,30 @@
         //ボタン名変更
         let _p = {
           oshirase: COMMON_JSON.config.btn_oshirase || "お知らせ",
-          kairan: COMMON_JSON.config.btn_kairan || "回覧板",
+          kairanban: COMMON_JSON.config.btn_kairan || "回覧板",
           event: COMMON_JSON.config.btn_calendar || "カレンダー",
           moushikomi: COMMON_JSON.config.btn_moushikomi || "各種申込",
         };
         Object.keys(_p).forEach(function (key) {
-          // console.log(key);
+          console.log(key);
           let _a = $$("winmenu_menu").getItem(key);
           _a.value = _p[key];
-          // TODO badge
+          // badge
+          let _badge = 0;
+          let _obj = COMMON_JSON[key] || [];
+          Object.keys(_obj).forEach(function (btnkey, index, arr) {
+            if (_obj[index]["info"] != "") {
+              _badge++;
+            }
+          });
+          _a.badge = _badge;
         });
         $$("winmenu_menu").refresh();
       },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
         switch (id) {
-          case "kairan":
+          case "kairanban":
             $$("ui_files").define("kubun", "kairanban");
             $$("ui_files").show();
             break;
