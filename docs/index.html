@@ -247,11 +247,11 @@
       },
       getIconName: function (pathname) {
         if (pathname.indexOf("/folders/") > -1) {//フォルダ
-          return "mdi-folder";
+          return "mdi-folder-google-drive";
         } else if (pathname.indexOf("/file/") > -1) {//ファイル
-          return "mdi-file";
+          return "mdi-file-outline";
         } else {//リンク
-          return "mdi-link";
+          return "mdi-link-variant";
         }
       },
       sha256: async function (text) {
@@ -366,7 +366,8 @@
             view: "list", id: "ui_files_list", template: function (obj) {
               let _css = ($$("ui_files").config.kubun == "kairanban") ? "fusen_bl" : "fusen_gn";
               let _icon = ui_menu_logic.getIconName(obj.fileId);
-              return "<div class='{0}' style='font-size:28px;'><span class='webix_icon mdi mdi-48px {1}'></span><span style='vertical-align:super'>　{2}</span></div>".format([_css, _icon, obj.name]);
+              let _info = (obj.info != "") ? "&nbsp;<span style='font-size:15px;vertical-align:super;' class='fusen_rd'>{0}</span>".format(obj.info) : "";
+              return "<div class='{0}' style='font-size:28px;'><span class='webix_icon mdi mdi-48px {1}'></span><span style='vertical-align:super'>　{2}</span>{3}</div>".format([_css, _icon, obj.name, _info]);
             },
             type: {
               height: 60
