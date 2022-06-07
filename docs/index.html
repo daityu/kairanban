@@ -153,8 +153,8 @@
       { id: "oshirase", value: "", color: "#7E2A6C", icon: "mdi-information", width: 2, height: 2, x: 1, y: 1 },
       { id: "kairanban", value: "", color: "#283D70", icon: "mdi-clipboard-text", width: 2, height: 2, x: 1, y: 3 },
       { id: "event", value: "", color: "#8D712B", icon: "mdi-calendar-month", height: 2, width: 2, x: 3, y: 1 },
-      // { id: "bousai", value: "安否確認", color: "#ef4565", icon: "mdi-home-heart", width: 2, height: 2, x: 1, y: 3 },
       { id: "moushikomi", value: "", color: "#266233", icon: "mdi-human-greeting", width: 2, height: 2, x: 3, y: 3 },
+      { id: "bousai", value: "防災情報", color: "#f22600", icon: "mdi-home-heart", width: 4, height: 2, x: 1, y: 5 },
     ];
     document.querySelector('#my-app-titile').textContent = APP_NAME;
     //メイン画面ロジック部
@@ -204,7 +204,7 @@
             ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
             break;
           case "bousai":
-            ui_menu_logic.newTabOpen(ui_menu_logic.gform2url(COMMON_JSON.config.anpi_url));
+            ui_menu_logic.newTabOpen(COMMON_JSON.config.anpi_url||"https://www.jma.go.jp/bosai/");
             break;
           case "moushikomi":
             $$("ui_files").define("kubun", "moushikomi");
@@ -274,10 +274,10 @@
           cells: [
             {
               id: "winmenu", rows: [
-                { view: "template", id: "winmenu_news", scroll: "auto" },
+                { view: "template", id: "winmenu_news", scroll: "auto", gravity:2 },
                 {
-                  view: "winmenu", id: "winmenu_menu", data: ui_menu_data, xCount: 4, yCount: 4, scroll: "auto", minHeight: 160,
-                  on: { onItemClick: ui_menu_logic.menuBtnClick }
+                  view: "winmenu", id: "winmenu_menu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto", minHeight: 160,
+                  on: { onItemClick: ui_menu_logic.menuBtnClick }, gravity:3
                 }
               ]
             },
