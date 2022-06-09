@@ -105,6 +105,11 @@
 
 <body>
   <script type="module">
+    marked.setOptions({
+      fusen: info => {
+        return "<span class='fusen_rd'>{0}</fusen>".format(info).value;
+      }
+    });
     let _url = new URL(location.href);
     // console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
@@ -204,7 +209,7 @@
             ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
             break;
           case "bousai":
-            ui_menu_logic.newTabOpen(COMMON_JSON.config.anpi_url||"https://www.jma.go.jp/bosai/");
+            ui_menu_logic.newTabOpen(COMMON_JSON.config.anpi_url || "https://www.jma.go.jp/bosai/");
             break;
           case "moushikomi":
             $$("ui_files").define("kubun", "moushikomi");
@@ -274,10 +279,10 @@
           cells: [
             {
               id: "winmenu", rows: [
-                { view: "template", id: "winmenu_news", scroll: "auto", gravity:2 },
+                { view: "template", id: "winmenu_news", scroll: "auto", gravity: 2 },
                 {
                   view: "winmenu", id: "winmenu_menu", data: ui_menu_data, xCount: 4, yCount: 6, scroll: "auto", minHeight: 160,
-                  on: { onItemClick: ui_menu_logic.menuBtnClick }, gravity:3
+                  on: { onItemClick: ui_menu_logic.menuBtnClick }, gravity: 3
                 }
               ]
             },
@@ -415,14 +420,13 @@
       },
       on: {
         onShow: function () {
-          if (!COMMON_JSON.oshirase) {
-            webix.ajax().get("./pdf/oshirase.txt").then(function (data) {
-              $$("ui_menu_oshirase").setHTML(marked.parse(data.text()));
-            });
-            return;
-          };
-          let _n = COMMON_JSON.oshirase.renketsu("name");
-          $$("ui_menu_oshirase").setHTML(marked.parse(_n));
+          let _html = "";
+          let _arr = COMMON_JSON.oshirase || [];
+          _arr.forEach(function (value, key) {
+            let _fusen = (value["info"] != "") ? "<span class='fusen_rd'>{0}</span>&nbsp;".format(value["info"]) : "";
+            _html += _fusen + value["name"] + "\n\n";
+          });
+          $$("ui_menu_oshirase").setHTML(marked.parse(_html));
         },
         onHide: function () {
         }
