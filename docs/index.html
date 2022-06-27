@@ -170,20 +170,6 @@
     //メイン画面ロジック部
     const ui_menu_logic = {
       init: function () {
-        //今日の天気
-        // https://www.jma.go.jp/bosai/common/const/area.json
-        // https://www.jma.go.jp/bosai/forecast/data/forecast/140000.json
-        // https://www.t3a.jp/blog/web-develop/weather-code-list/
-        webix.ajax().get("https://www.jma.go.jp/bosai/forecast/data/forecast/140000.json").then(function (data) {
-          let _r = data.json();
-          let _d = new Date(_r[0]["reportDatetime"]);
-          let _w = _r[0]["timeSeries"][2]["areas"][0]["temps"];
-          let _wc = _r[0]["timeSeries"][0]["areas"][0]["weatherCodes"][0];
-          let _wcicon = (_d.getHours() >= 17) ? TENKI[_wc][1] : TENKI[_wc][0];//17時で日変
-          $$("winmenu_weather").setHTML(
-            "<span style='font-size:25px'>{0}</span><img draggable='false' src='https://www.jma.go.jp/bosai/forecast/img/{1}' height='40' width='40' /><span style='color:red;'>最高:{2}℃</span>&nbsp;<span style='color:blue;'>最低:{3}℃</span>".format([_d.toLocaleDateString("ja-JP", { weekday: 'short', month: 'long', day: 'numeric' }), _wcicon, _w[1], _w[0]])
-          );
-        });
         //サブ画面定義
         webix.ui(ui_qrcode);
         webix.ui(ui_oshirase);
@@ -588,6 +574,20 @@
         // webix.message({ type: "error", text: "API_KEYが間違っています" });
       }).finally(function () {
         $$("app").hideProgress();
+      });
+      //今日の天気
+      // https://www.jma.go.jp/bosai/common/const/area.json
+      // https://www.jma.go.jp/bosai/forecast/data/forecast/140000.json
+      // https://www.t3a.jp/blog/web-develop/weather-code-list/
+      webix.ajax().get("https://www.jma.go.jp/bosai/forecast/data/forecast/140000.json").then(function (data) {
+        let _r = data.json();
+        let _d = new Date(_r[0]["reportDatetime"]);
+        let _wt = _r[0]["timeSeries"][2]["areas"][0]["temps"];//気温
+        let _wc = _r[0]["timeSeries"][0]["areas"][0]["weatherCodes"][0];
+        let _wcicon = (_d.getHours() >= 17) ? TENKI[_wc][1] : TENKI[_wc][0];//17時で日変
+        $$("winmenu_weather").setHTML(
+          "<span style='font-size:25px'>{0}</span><img draggable='false' src='https://www.jma.go.jp/bosai/forecast/img/{1}' height='40' width='40' /><span style='color:red;'>最高:{2}℃</span>&nbsp;<span style='color:blue;'>最低:{3}℃</span>".format([_d.toLocaleDateString("ja-JP", { weekday: 'short', month: 'long', day: 'numeric' }), _wcicon, _wt[1], _wt[0]])
+        );
       });
     });
   </script>
