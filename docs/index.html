@@ -584,8 +584,9 @@
         let _r = data.json();
         let _d = new Date(_r[0]["reportDatetime"]);
         let _wt = _r[0]["timeSeries"][2]["areas"][0]["temps"];//気温最低
-        let _wtmin = (_wt[0] < _wt[1]) ? _wt[0] : _wt[1];;//気温最低
-        let _wtmax = (_wt[0] < _wt[1]) ? _wt[1] : _wt[0];;//気温最高
+        let _wtmin = (_wt[0] < _wt[1]) ? _wt[0] : _wt[1];//気温最低
+        let _wtmax = (_wt[0] < _wt[1]) ? _wt[1] : _wt[0];//気温最高
+        if (_wtmin == _wtmax) _wtmin = _wt[2] || "-";
         let _wc = _r[0]["timeSeries"][0]["areas"][0]["weatherCodes"][0];//天気コード
         let _wcicon = (_d.getHours() >= 17) ? TENKI[_wc][1] : TENKI[_wc][0];//17時で日変
         let _ws = _r[0]["timeSeries"][0]["areas"][0]["weathers"][0];//天気文言
