@@ -591,7 +591,7 @@
         let _wcicon = (_d.getHours() >= 17) ? TENKI[_wc][1] : TENKI[_wc][0];//17時で日変
         let _ws = _r[0]["timeSeries"][0]["areas"][0]["weathers"][0];//天気文言
         $$("winmenu_weather").setHTML(
-          "<span style='font-size:25px'>{0}</span><img draggable='false' src='https://www.jma.go.jp/bosai/forecast/img/{1}' height='40' width='40' /><span style='color:red;'>最高:{2}℃</span>&nbsp;<span style='color:blue;'>最低:{3}℃</span><a href='https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=1410000' target='_blank'><span class='webix_icon mdi mdi-24px mdi-web'></span></a>".format([_d.toLocaleDateString("ja-JP", { weekday: 'short', month: 'long', day: 'numeric' }), _wcicon, _wtmax, _wtmin, _ws])
+          "<span style='font-size:25px'>{0}</span><img draggable='false' src='https://www.jma.go.jp/bosai/forecast/img/{1}' height='40' width='40' /><a href='https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=1410000' target='_blank'><span style='color:red;'>最高:{2}℃</span>&nbsp;<span style='color:blue;'>最低:{3}℃</span><span class='webix_icon mdi mdi-24px mdi-web'></span></a>".format([_d.toLocaleDateString("ja-JP", { weekday: 'short', month: 'long', day: 'numeric' }), _wcicon, _wtmax, _wtmin, _ws])
         );
       });
     });
