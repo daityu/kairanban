@@ -200,9 +200,15 @@
               _badge++;
             }
           });
-          _a.badge = _badge;
+          ui_menu_logic.sha256(JSON.stringify(_obj)).then(function (hash) {
+            if (hash == webix.storage.local.get(key + '_hash')) {
+              _a.badge = 0;
+            } else {
+              _a.badge = _badge;
+            }
+            $$("winmenu_menu").refresh();
+          });
         });
-        $$("winmenu_menu").refresh();
       },
       menuBtnClick: function (id) {
         // webix.message(this.getItem(id).value);
@@ -413,6 +419,10 @@
           $$("ui_files_list").clearAll();
           $$("ui_files_list").parse(_data);
           $$("ui_files_list").unselectAll();
+          //ハッシュ値保存
+          ui_menu_logic.sha256(JSON.stringify(_data)).then(function (hash) {
+            webix.storage.local.put(_kubun + "_hash", hash);
+          });
         },
         onHide: function () {
         }
@@ -437,6 +447,10 @@
             _html += _fusen + value["name"] + "\n\n";
           });
           $$("ui_menu_oshirase").setHTML(marked.parse(_html));
+          //ハッシュ値保存
+          ui_menu_logic.sha256(JSON.stringify(_arr)).then(function (hash) {
+            webix.storage.local.put("oshirase_hash", hash);
+          });
         },
         onHide: function () {
         }
@@ -547,18 +561,6 @@
       webix.extend($$("app"), webix.ProgressBar);
       //初回のみアクセス。再度取得する場合は、一度アプリを終了してください
       COMMON_JSON = webix.storage.session.get("COMMON_JSON") || {};
-      // if (COMMON_JSON.config) {
-      //   ui_menu_logic.init();
-      //   return;
-      // }
-      // URLからAPIキーを取得する
-      // var _u = new URL(location.href);
-      // _u.searchParams.forEach(function (value, key) {
-      //   if (key == "API_KEY") {
-      //     API_KEY = value;
-      //   }
-      // });
-      // API_KEY = API_KEY || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg"; //EACサンプル
       //設定ファイル取得
       $$("app").showProgress({
         type: "top"
