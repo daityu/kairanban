@@ -181,6 +181,9 @@
           let _n = COMMON_JSON.news.renketsu("name");
           $$("winmenu_news").setHTML(marked.parse(_n));
         }
+        ui_menu_logic.menuBtnBadge();
+      },
+      menuBtnBadge: function () {
         //メニューボタン名変更
         let _p = {
           oshirase: COMMON_JSON.config.btn_oshirase || "お知らせ",
@@ -425,6 +428,7 @@
           });
         },
         onHide: function () {
+          ui_menu_logic.menuBtnBadge();
         }
       }
     };
@@ -453,6 +457,7 @@
           });
         },
         onHide: function () {
+          ui_menu_logic.menuBtnBadge();
         }
       }
     };
