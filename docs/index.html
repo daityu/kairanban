@@ -222,9 +222,9 @@
             $$("ui_files").show();
             break;
           case "event":
-            // ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
-            $$("ui_calendar_iframe").define("src", COMMON_JSON.config.calendar_url);
-            $$("ui_calendar").show();
+            ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
+            // $$("ui_calendar_iframe").define("src", COMMON_JSON.config.calendar_url);
+            // $$("ui_calendar").show();
             break;
           case "bousai":
             ui_menu_logic.newTabOpen(COMMON_JSON.config.anpi_url || "https://www.jma.go.jp/bosai/");
