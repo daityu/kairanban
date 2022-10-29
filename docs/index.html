@@ -176,6 +176,7 @@
         webix.ui(ui_oshirase);
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
+        webix.ui(ui_calendar);
         $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, COMMON_JSON.config.group_logo]));//ヘッダー
         if (COMMON_JSON.news) {//新着情報
           let _n = COMMON_JSON.news.renketsu("name");
@@ -221,7 +222,9 @@
             $$("ui_files").show();
             break;
           case "event":
-            ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
+            // ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
+            $$("ui_calendar_iframe").define("src", COMMON_JSON.config.calendar_url);
+            $$("ui_calendar").show();
             break;
           case "bousai":
             ui_menu_logic.newTabOpen(COMMON_JSON.config.anpi_url || "https://www.jma.go.jp/bosai/");
@@ -551,6 +554,21 @@
         },
         onHide: function () {
           qrScanner.stop();
+        }
+      }
+    };
+    const ui_calendar = {
+      view: "window", id: "ui_calendar", head: "カレンダー", close: true, fullscreen: true, modal: true, CB: null,
+      body: {
+        rows: [
+          {view:"iframe", id:"ui_calendar_iframe", src:""},
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
+        ]
+      },
+      on: {
+        onShow: function () {
+        },
+        onHide: function () {
         }
       }
     };
