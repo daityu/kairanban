@@ -118,6 +118,7 @@
     // console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
     var API_KEY = _url.searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
+    var ICON_DIR = _url.searchParams.get("ICON_DIR") || "000";//アイコンは、180px,192px,512pxの3種が必要です
     var myDynamicManifest = {
       "id": API_KEY,
       "name": APP_NAME,
@@ -130,17 +131,17 @@
       "orientation": "any",
       "icons": [
         {
-          "src": location.origin + location.pathname + "images/180.png",
+          "src": location.origin + location.pathname + "images/" + ICON_DIR + "/180.png",
           "sizes": "180x180",
           "type": "image/png"
         },
         {
-          "src": location.origin + location.pathname + "images/192.png",
+          "src": location.origin + location.pathname + "images/" + ICON_DIR + "/192.png",
           "sizes": "192x192",
           "type": "image/png"
         },
         {
-          "src": location.origin + location.pathname + "images/512.png",
+          "src": location.origin + location.pathname + "images/" + ICON_DIR + "/512.png",
           "sizes": "512x512",
           "type": "image/png"
         }
@@ -561,7 +562,7 @@
       view: "window", id: "ui_calendar", head: "カレンダー", close: true, fullscreen: true, modal: true, CB: null,
       body: {
         rows: [
-          {view:"iframe", id:"ui_calendar_iframe", src:""},
+          { view: "iframe", id: "ui_calendar_iframe", src: "" },
           { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
       },
@@ -614,7 +615,7 @@
         let _d = new Date(_r[0]["reportDatetime"]);
         let _wt = _r[0]["timeSeries"][2]["areas"][0]["temps"];//気温最低
         let _wtmin = (_wt[0] < _wt[1]) ? _wt[0] : _wt[1];//気温最低
-        let _wtmax = (_wt[0] < _wt[1]) ? _wt[1] : _wt[0];//気温最高
+        let _wtmax = (_wt[0] > _wt[1]) ? _wt[0] : _wt[1];//気温最高
         if (_wtmin == _wtmax) _wtmin = _wt[2] || "-";
         let _wc = _r[0]["timeSeries"][0]["areas"][0]["weatherCodes"][0];//天気コード
         let _wcicon = (_d.getHours() >= 17) ? TENKI[_wc][1] : TENKI[_wc][0];//17時で日変
