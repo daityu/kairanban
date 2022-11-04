@@ -223,7 +223,7 @@
             $$("ui_files").show();
             break;
           case "event":
-            ui_menu_logic.newTabOpen(COMMON_JSON.config.calendar_url);
+            ui_menu_logic.newTabOpen("{0}&mode=AGENDA".format(COMMON_JSON.config.calendar_url));
             // $$("ui_calendar_iframe").define("src", COMMON_JSON.config.calendar_url);
             // $$("ui_calendar").show();
             break;
