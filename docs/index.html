@@ -118,7 +118,7 @@
     // console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
     var API_KEY = _url.searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
-    var ICON_DIR = _url.searchParams.get("ICON_DIR") || "000";//アイコンは、180px,192px,512pxの3種が必要です
+    var ICON_DIR = _url.searchParams.get("ICON_DIR") || "000";//アイコンは、32px,180px,192px,512pxの3種が必要です
     var myDynamicManifest = {
       "id": API_KEY,
       "name": APP_NAME,
@@ -181,6 +181,10 @@
         let _group_icon = COMMON_JSON.config.group_logo || location.origin + location.pathname + "images/" + ICON_DIR + "/32.png";
         $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, _group_icon]));//ヘッダー
         if (COMMON_JSON.news) {//新着情報
+          let _arr_news = [];
+          Object.keys(COMMON_JSON.news).forEach(function (btnkey, index, arr) {
+            COMMON_JSON.news[index]["name"] += COMMON_JSON.news[index]["info"] ? ' <span class="fusen_rd">{0}</span>'.format(COMMON_JSON.news[index]["info"]) : "";
+          });
           let _n = COMMON_JSON.news.renketsu("name");
           $$("winmenu_news").setHTML(marked.parse(_n));
         }
