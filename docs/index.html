@@ -178,7 +178,8 @@
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
         webix.ui(ui_calendar);
-        $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, COMMON_JSON.config.group_logo]));//ヘッダー
+        let _group_icon = COMMON_JSON.config.group_logo || location.origin + location.pathname + "images/" + ICON_DIR + "/32.png";
+        $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, _group_icon]));//ヘッダー
         if (COMMON_JSON.news) {//新着情報
           let _n = COMMON_JSON.news.renketsu("name");
           $$("winmenu_news").setHTML(marked.parse(_n));
