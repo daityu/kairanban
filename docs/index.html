@@ -179,6 +179,7 @@
         webix.ui(ui_files);
         webix.ui(ui_calendar);
         let _group_icon = COMMON_JSON.config.group_logo || location.origin + location.pathname + "images/" + ICON_DIR + "/32.png";
+//        let _group_icon = (ICON_DIR) ? "./images/{2}/32.png".format([COMMON_JSON.config.group_logo, location.origin, ICON_DIR]) : COMMON_JSON.config.group_logo;
         $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, _group_icon]));//ヘッダー
         if (COMMON_JSON.news) {//新着情報
           let _arr_news = [];
