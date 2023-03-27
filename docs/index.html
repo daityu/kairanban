@@ -173,7 +173,7 @@
     const ui_menu_logic = {
       init: function () {
         //サブ画面定義
-        // webix.ui(ui_qrcode);
+        webix.ui(ui_qrcode);
         webix.ui(ui_oshirase);
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
@@ -530,41 +530,40 @@
         onShow: function () {
           // $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
           $$("ui_systemsetting_form").setValues({ API_KEY: API_KEY }, true);
-          //TODO QRコード機能は一時停止
-          // document.getElementById("qrcode").replaceChildren();
-          // new QRCode(document.getElementById("qrcode"), location.href);
+          document.getElementById("qrcode").replaceChildren();
+          new QRCode(document.getElementById("qrcode"), location.href);
         },
         onHide: function () {
         }
       }
     };
     //windowQRCODE
-    // import QrScanner from "./libs/qr-scanner/qr-scanner.min.js";
-    // var qrScanner = null;
-    // const ui_qrcode = {
-    //   view: "window", id: "ui_qrcode", head: "QRコードリーダー", close: true, fullscreen: true, modal: true, CB: null,
-    //   body: {
-    //     rows: [
-    //       { view: "video", id: "qr-video", controls: false },
-    //       { view: "text", id: "ui_qrcode_txt" },
-    //       { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
-    //     ]
-    //   },
-    //   on: {
-    //     onShow: function () {
-    //       $$("ui_qrcode_txt").setValue("");
-    //       qrScanner = qrScanner || new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode").config.CB(result.data),
-    //         {
-    //           highlightScanRegion: true,
-    //           highlightCodeOutline: true,
-    //         });
-    //       qrScanner.start();
-    //     },
-    //     onHide: function () {
-    //       qrScanner.stop();
-    //     }
-    //   }
-    // };
+    import QrScanner from "./libs/qr-scanner/qr-scanner.min.js";
+    var qrScanner = null;
+    const ui_qrcode = {
+      view: "window", id: "ui_qrcode", head: "QRコードリーダー", close: true, fullscreen: true, modal: true, CB: null,
+      body: {
+        rows: [
+          { view: "video", id: "qr-video", controls: false },
+          { view: "text", id: "ui_qrcode_txt" },
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
+        ]
+      },
+      on: {
+        onShow: function () {
+          $$("ui_qrcode_txt").setValue("");
+          qrScanner = qrScanner || new QrScanner($$("qr-video").getVideo(), result => $$("ui_qrcode").config.CB(result.data),
+            {
+              highlightScanRegion: true,
+              highlightCodeOutline: true,
+            });
+          qrScanner.start();
+        },
+        onHide: function () {
+          qrScanner.stop();
+        }
+      }
+    };
     const ui_calendar = {
       view: "window", id: "ui_calendar", head: "カレンダー", close: true, fullscreen: true, modal: true, CB: null,
       body: {
