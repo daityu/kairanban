@@ -383,7 +383,8 @@
           on: {
             onAfterTabClick: function (id) {
               if (id == "reload") {
-                location.reload(true);
+                // location.reload(true);
+                window.location.href = window.location.href
               }
             }
           }
