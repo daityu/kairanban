@@ -530,8 +530,10 @@
         onShow: function () {
           // $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
           $$("ui_systemsetting_form").setValues({ API_KEY: API_KEY }, true);
-          document.getElementById("qrcode").replaceChildren();
-          new QRCode(document.getElementById("qrcode"), location.href);
+          webix.delay(function () {//再表示
+            document.getElementById("qrcode").replaceChildren();
+            new QRCode(document.getElementById("qrcode"), location.href);
+          });
         },
         onHide: function () {
         }
