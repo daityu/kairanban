@@ -118,7 +118,7 @@
     // console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
     var API_KEY = _url.searchParams.get("API_KEY") || "AKfycby2AZsy6Zx6jez5IfRW6PYLFKxd0nBcwf0gjWEPFodd74N8uCnvJWkhQhpNfwVLlSXNkg";//EACサンプル
-    var ICON_DIR = _url.searchParams.get("ICON_DIR") || "000";//アイコンは、32px,180px,192px,512pxの3種が必要です
+    var ICON_DIR = _url.searchParams.get("ICON_DIR") || "000";//アイコンは、32px,180px,192px,512pxの4種が必要です
     var myDynamicManifest = {
       "id": API_KEY,
       "name": APP_NAME,
@@ -459,7 +459,7 @@
           let _arr = COMMON_JSON.oshirase || [];
           _arr.forEach(function (value, key) {
             let _fusen = (value["info"] != "") ? "<span class='fusen_rd'>{0}</span>&nbsp;".format(value["info"]) : "";
-            _html += _fusen + value["name"] + "\n\n";
+            _html += value["name"] + _fusen + "\n\n";
           });
           $$("ui_menu_oshirase").setHTML(marked.parse(_html));
           //ハッシュ値保存
@@ -523,7 +523,7 @@
             ], elementsConfig: { labelWidth: 100 }
           },
           { view: "label", label: "このアプリのQRコード" },
-          { template: "<div id='qrcode'></div>" },
+          { view:"template", id:"qrcode_img"},//
           { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
       },
@@ -532,8 +532,9 @@
           // $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
           $$("ui_systemsetting_form").setValues({ API_KEY: API_KEY }, true);
           webix.delay(function () {//再表示
-            document.getElementById("qrcode").replaceChildren();
-            new QRCode(document.getElementById("qrcode"), location.href);
+            $$("qrcode_img").setHTML('<img src="https://chart.apis.google.com/chart?chs=250x250&cht=qr&chl={0}" alt="QRコード">'.format(location.href));
+            // document.getElementById("qrcode").replaceChildren();
+            // new QRCode(document.getElementById("qrcode"), location.href);
           });
         },
         onHide: function () {
