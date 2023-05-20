@@ -350,7 +350,7 @@
                 { view: "text", name: "address2", label: "建物名等" },
                 { view: "text", name: "room", label: "部屋番号" },
                 { view: "text", name: "tel", label: "電話番号" },
-                { view: "text", name: "unit", label: "所属組織" },
+                { view: "text", name: "group", label: "所属組織", value:COMMON_JSON.config.group_name },
                 { template: "出典:「位置参照情報」(国土交通省)の加工情報・「HeartRails Geo API」(HeartRails Inc.)", borderless: true },
               ],
               on: {
@@ -359,7 +359,7 @@
                   webix.storage.local.put("ui_setting_form", _v);
                 },
                 onViewShow: function () {
-                  $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form") || {});
+                  $$("ui_setting_form").setValues(webix.storage.local.get("ui_setting_form") || {}, true);
                 }
               }
             },
