@@ -318,7 +318,7 @@
             {
               view: "form", id: "ui_setting_form", padding: 3,
               elements: [
-                { template: "イベント申込みや安否確認時に必要になる項目を、あらかじめ入力することができます。", autoheight: true, borderless: true },
+                { template: "<span style='font-size:0.8em;'>イベント申込みや安否確認時に必要になる項目を、あらかじめ入力することができます。</span>", autoheight: true, borderless: true },
                 { view: "text", name: "name", label: "お名前" },
                 { view: "text", name: "email", label: "メール", type: "email", placeholder: "name@example.com" },
                 {
@@ -351,7 +351,7 @@
                 { view: "text", name: "room", label: "部屋番号" },
                 { view: "text", name: "tel", label: "電話番号" },
                 { view: "text", name: "group", label: "グループ" },
-                { template: "出典:「位置参照情報」(国土交通省)の加工情報・「HeartRails Geo API」(HeartRails Inc.)", borderless: true },
+                { template: "<span style='font-size:0.5em;'>出典:「位置参照情報」(国土交通省)の加工情報・「HeartRails Geo API」(HeartRails Inc.)<br>入力した個人情報は、お使いの本体にのみ保存します。</span>", borderless: true },
               ],
               on: {
                 onChange: function () {
