@@ -4,3 +4,9 @@ blockquote {
     color: #6a737d;
     padding: 0 1em;
 }
+table, td, th {
+    border-spacing: 0px;
+    border: 1px solid gray;
+    border-collapse: collapse !important;
+    padding: 3px 5px;
+}
