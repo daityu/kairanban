@@ -180,8 +180,9 @@
         webix.ui(ui_files);
         webix.ui(ui_calendar);
         let _group_icon = COMMON_JSON.config.group_logo || location.origin + location.pathname + "images/" + ICON_DIR + "/32.png";
-//        let _group_icon = (ICON_DIR) ? "./images/{2}/32.png".format([COMMON_JSON.config.group_logo, location.origin, ICON_DIR]) : COMMON_JSON.config.group_logo;
+        //        let _group_icon = (ICON_DIR) ? "./images/{2}/32.png".format([COMMON_JSON.config.group_logo, location.origin, ICON_DIR]) : COMMON_JSON.config.group_logo;
         $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, _group_icon]));//ヘッダー
+        $$("_group").setValue(COMMON_JSON.config.group_name);//設定.グループ
         if (COMMON_JSON.news) {//新着情報
           let _arr_news = [];
           Object.keys(COMMON_JSON.news).forEach(function (btnkey, index, arr) {
@@ -269,10 +270,12 @@
         });
         return "{0}/uc?id={1}".format([_url.origin, _vid]);
       },
-      gform2url: function (gform) {
+      gform2url: function (gform) {//埋込文字列変換※埋込文字列は仕様書.md参照
         let url = new URL(gform);
         let params = url.searchParams;
         let _ls = webix.storage.local.get("ui_setting_form") || {};
+        //groupはタイトル固定
+        _ls["group"] = COMMON_JSON.config.group_name || "未設定";
         let _np = [];
         params.forEach(function (value, key) {
           _np.push(key + "=" + (_ls[value] || ""));
@@ -351,7 +354,7 @@
                 { view: "text", name: "address2", label: "建物名等" },
                 { view: "text", name: "room", label: "部屋番号" },
                 { view: "text", name: "tel", label: "電話番号" },
-                { view: "text", name: "group", label: "グループ" },
+                { view: "text", id: "_group", label: "グループ", readonly: true },
                 { template: "<span style='font-size:0.5em;'>出典:「位置参照情報」(国土交通省)の加工情報・「HeartRails Geo API」(HeartRails Inc.)<br>入力した個人情報は、お使いの本体にのみ保存します。</span>", borderless: true },
               ],
               on: {
@@ -526,7 +529,7 @@
             ], elementsConfig: { labelWidth: 100 }
           },
           { view: "label", label: "このアプリのQRコード" },
-          { view:"template", id:"qrcode_img"},//
+          { view: "template", id: "qrcode_img" },//
           { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
         ]
       },
