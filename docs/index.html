@@ -539,7 +539,7 @@
           // $$("ui_systemsetting_form").setValues({ API_KEY: webix.storage.local.get("API_KEY") }, true);
           $$("ui_systemsetting_form").setValues({ API_KEY: API_KEY }, true);
           webix.delay(function () {//再表示
-            $$("qrcode_img").setHTML('<img src="https://chart.apis.google.com/chart?chs=250x250&cht=qr&chl={0}" alt="QRコード">'.format(encodeURIComponent(location.href)));
+            $$("qrcode_img").setHTML('<img src=" https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={0}" alt="QRコード">'.format(encodeURIComponent(location.href)));
             // document.getElementById("qrcode").replaceChildren();
             // new QRCode(document.getElementById("qrcode"), location.href);
           });
