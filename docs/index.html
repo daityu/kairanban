@@ -179,6 +179,7 @@
         webix.ui(ui_systemsetting);
         webix.ui(ui_files);
         webix.ui(ui_calendar);
+        webix.ui(ui_mdviewer);
         let _group_icon = COMMON_JSON.config.group_logo || location.origin + location.pathname + "images/" + ICON_DIR + "/32.png";
         //        let _group_icon = (ICON_DIR) ? "./images/{2}/32.png".format([COMMON_JSON.config.group_logo, location.origin, ICON_DIR]) : COMMON_JSON.config.group_logo;
         $$("group_name").setValue("<img src='{1}' style='margin-right: 5px;' align='top' />{0}".format([COMMON_JSON.config.group_name, _group_icon]));//ヘッダー
@@ -422,6 +423,12 @@
                 if (!_item.fileId) {
                   return;
                 }
+                if (_item.fileId.endsWith(".md")) {
+                  //マークダウンビューアを起動する
+                  $$("ui_mdviewer")._url = _item.fileId;
+                  $$("ui_mdviewer").show();
+                  return;
+                }
                 if ($$("ui_files").config.kubun == "kairanban") {//googledriveを参照
                   ui_menu_logic.gdriveOpen(_item.fileId);
                 } else {//googleformを参照
@@ -476,6 +483,23 @@
         },
         onHide: function () {
           ui_menu_logic.menuBtnBadge();
+        }
+      }
+    };
+    //マークダウン文書表示
+    const ui_mdviewer = {
+      view: "window", id: "ui_mdviewer", _url: "", head: "回覧板", close: true, fullscreen: true, modal: true,
+      body: {
+        rows: [
+          { view: "template", id: "ui_menu_mdviewer", scroll: "auto" },
+          { view: "button", height: 60, label: "閉じる", click: function (id, event) { this.getTopParentView().hide(); } }
+        ]
+      },
+      on: {
+        onShow: function () {
+          webix.ajax().get(this._url).then(function (data) {
+            $$("ui_menu_mdviewer").setHTML(marked.parse(data.text()));
+          });
         }
       }
     };
