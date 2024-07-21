@@ -497,6 +497,7 @@
       },
       on: {
         onShow: function () {
+          $$("ui_menu_mdviewer").setHTML("");
           webix.ajax().get(this._url).then(function (data) {
             $$("ui_menu_mdviewer").setHTML(marked.parse(data.text()));
           });
