@@ -289,6 +289,8 @@
           return "mdi-folder-google-drive";
         } else if (pathname.indexOf("/file/") > -1) {//ファイル
           return "mdi-file-outline";
+        } else if (pathname.endsWith(".md")) {//マークダウン文書
+          return "mdi-file-document";
         } else {//リンク
           return "mdi-link-variant";
         }
@@ -489,7 +491,7 @@
     };
     //マークダウン文書表示
     const ui_mdviewer = {
-      view: "window", id: "ui_mdviewer", _url: "", head: "回覧板", close: true, fullscreen: true, modal: true,
+      view: "window", id: "ui_mdviewer", _url: "", head: "ビューア", close: true, fullscreen: true, modal: true,
       body: {
         rows: [
           { view: "template", id: "ui_menu_mdviewer", scroll: "auto" },
