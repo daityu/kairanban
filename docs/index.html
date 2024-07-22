@@ -110,12 +110,13 @@
 
 <body>
   <script type="module">
-    marked.setOptions({
-      fusen: info => {
-        return "<span class='fusen_rd'>{0}</fusen>".format(info).value;
+    const renderer = {
+      link(href, title, text) {
+        const html = marked.Renderer.prototype.link.call(this, href, title, text);
+        return html.replace("<a", "<a target='_blank' rel='noopener noreferrer'");
       }
-    });
-
+    };
+    // marked.use({ renderer });//TODO なぜか動かない
     let _url = new URL(location.href);
     // console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
