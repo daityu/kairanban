@@ -115,6 +115,7 @@
         return "<span class='fusen_rd'>{0}</fusen>".format(info).value;
       }
     });
+
     let _url = new URL(location.href);
     // console.log(_url);
     var APP_NAME = _url.searchParams.get("APP_NAME") || "回覧板アプリ";
@@ -499,7 +500,12 @@
         onShow: function () {
           $$("ui_menu_mdviewer").setHTML("");
           webix.ajax().get(this._url).then(function (data) {
-            $$("ui_menu_mdviewer").setHTML(marked.parse(data.text()));
+            const originalString = marked.parse(data.text());
+            const replacedString = originalString.replace(
+              /<a /g,
+              '<a target="_blank" rel="noreferrer noopener nofollow" '
+            );
+            $$("ui_menu_mdviewer").setHTML(replacedString);
           });
         }
       }
