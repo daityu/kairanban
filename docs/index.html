@@ -192,7 +192,7 @@
             COMMON_JSON.news[index]["name"] += COMMON_JSON.news[index]["info"] ? ' <span class="fusen_rd">{0}</span>'.format(COMMON_JSON.news[index]["info"]) : "";
           });
           let _n = COMMON_JSON.news.renketsu("name");
-          $$("winmenu_news").setHTML(marked.parse(_n));
+          $$("winmenu_news").setHTML(ui_menu_logic.md2html(_n));
         }
         ui_menu_logic.menuBtnBadge();
       },
@@ -300,6 +300,14 @@
         const uint8 = new TextEncoder().encode(text)
         const digest = await crypto.subtle.digest('SHA-256', uint8)
         return Array.from(new Uint8Array(digest)).map(v => v.toString(16).padStart(2, '0')).join('')
+      },
+      md2html: function (text) {
+        const originalString = marked.parse(text);
+        const replacedString = originalString.replace(
+          /<a /g,
+          '<a target="_blank" rel="noreferrer noopener nofollow" '
+        );
+        return replacedString;
       }
     };
     //メイン画面レイアウト
@@ -479,7 +487,7 @@
             let _fusen = (value["info"] != "") ? "<span class='fusen_rd'>{0}</span>&nbsp;".format(value["info"]) : "";
             _html += value["name"] + _fusen + "\n\n";
           });
-          $$("ui_menu_oshirase").setHTML(marked.parse(_html));
+          $$("ui_menu_oshirase").setHTML(ui_menu_logic.md2html(_html));
           //ハッシュ値保存
           ui_menu_logic.sha256(JSON.stringify(_arr)).then(function (hash) {
             webix.storage.local.put("oshirase_hash", hash);
@@ -503,12 +511,7 @@
         onShow: function () {
           $$("ui_menu_mdviewer").setHTML("");
           webix.ajax().get(this._url).then(function (data) {
-            const originalString = marked.parse(data.text());
-            const replacedString = originalString.replace(
-              /<a /g,
-              '<a target="_blank" rel="noreferrer noopener nofollow" '
-            );
-            $$("ui_menu_mdviewer").setHTML(replacedString);
+            $$("ui_menu_mdviewer").setHTML(ui_menu_logic.md2html(data.text()));
           });
         }
       }
