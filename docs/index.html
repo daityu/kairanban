@@ -95,12 +95,12 @@
   </script>
   <link rel="shortcut icon" href="favicon.ico">
   <script src="./libs/Common.js"></script>
-  <link rel="stylesheet" href="//cdn.webix.com/edge/skins/flat.min.css" type="text/css">
-  <link rel="stylesheet" href="//cdn.webix.com/materialdesignicons/5.8.95/css/materialdesignicons.min.css"
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/webix-hub/webix@master/codebase/skins/flat.min.css" type="text/css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css"
     type="text/css" charset="utf-8">
   <link rel="stylesheet" href="./libs/winmenu/winmenu.css" type="text/css">
   <link rel="stylesheet" href="./css/md.css" type="text/css">
-  <script src="//cdn.webix.com/edge/webix.min.js" type="text/javascript"></script>
+  <script src="//cdn.jsdelivr.net/gh/webix-hub/webix@master/codebase/webix.min.js" type="text/javascript"></script>
   <script src="./libs/winmenu/winmenu.js" type="text/javascript"></script>
   <script src="./libs/qrcodejs/qrcode.min.js" type="text/javascript"></script>
   <script src="//cdn.jsdelivr.net/npm/marked/marked.min.js" type="text/javascript"></script>
@@ -290,10 +290,12 @@
           return "mdi-folder-google-drive";
         } else if (pathname.indexOf("/file/") > -1) {//ファイル
           return "mdi-file-outline";
+        } else if (pathname == "") {//タイトル行
+          return "mdi-menu";
         } else if (pathname.endsWith(".md")) {//マークダウン文書
           return "mdi-blank";
-        } else {//アイコンなし
-          return "mdi-menu";
+        } else {//デフォルト
+          return "mdi-link-box-outline";
         }
       },
       sha256: async function (text) {
